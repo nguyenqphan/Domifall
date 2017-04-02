@@ -46,6 +46,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\_Scripts\CollideCheck.cs" />
+     <Compile Include="Assets\_Scripts\Control.cs" />
+     <Compile Include="Assets\_Scripts\Domino.cs" />
      <Compile Include="Assets\_Scripts\DuplicationCheck.cs" />
  <Reference Include="Facebook.Unity.Settings">
  <HintPath>/Users/nguyenphan/Documents/__CurrentProjects/Domifall/Library/FacebookSDK/Facebook.Unity.Settings.dll</HintPath>

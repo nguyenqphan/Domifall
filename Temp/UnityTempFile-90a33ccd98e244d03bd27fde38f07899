@@ -89,7 +89,10 @@
 -define:UNITY_TEAM_LICENSE
 -define:UNITY_PRO_LICENSE
 -define:UNITY_HAS_GOOGLEVR
-'Assets/_Scripts/DupplicationCheck.cs'
+'Assets/_Scripts/CollideCheck.cs'
+'Assets/_Scripts/Control.cs'
+'Assets/_Scripts/Domino.cs'
+'Assets/_Scripts/DuplicationCheck.cs'
 -r:'/Applications/Unity/Unity.app/Contents/Mono/lib/mono/unity/System.Runtime.Serialization.dll'
 -r:'/Applications/Unity/Unity.app/Contents/Mono/lib/mono/unity/System.Xml.Linq.dll'
 -r:'/Applications/Unity/Unity.app/Contents/Mono/lib/mono/unity/UnityScript.dll'
