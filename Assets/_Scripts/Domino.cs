@@ -14,11 +14,12 @@ public class Domino : MonoBehaviour {
 
 	void Awake()
 	{
-		domiTrans = GetComponent<Transform>();
+		domiTrans = GetComponent<Transform>();					
 	}
 
 	public void StartMoveUp(bool activeDomino)
 	{
+		//if it is an active domino, move domino up max length. Otherwise min length
 		if(!activeDomino)
 		{
 			length = minLength;
@@ -26,10 +27,11 @@ public class Domino : MonoBehaviour {
 			length = maxLength;
 		}
 
-		StartCoroutine(MoveUp(length));
+		StartCoroutine(MoveUp(length));								//Start move up
 
 	}
 
+	//A coroutin method to move an domino up
 	private IEnumerator MoveUp(float distance)
 	{
 		float localX = domiTrans.localPosition.x;
@@ -51,32 +53,40 @@ public class Domino : MonoBehaviour {
 
 		StopCoroutine("MoveUp");
 
+		//if distance is equal to max length, it is an active domino. 
 		if(distance == maxLength)
 		{
-			gameObject.tag = "ActiveDomino";
-			StartCoroutine(RotateDomino());
+			gameObject.tag = "ActiveDomino";					//Change the tag of an domino to ActiveDomino
+			StartCoroutine(RotateDomino());						//Call RatateDomino() to rotate the domino. Will read input every frame in this method
+		}else{
+			SetupDomino();										//This function will Add physic components to a domino
 		}
 	}
 
+
+	//if called, this method will be executed every frame.
 	private IEnumerator RotateDomino()
 	{
 		while(true)
 		{
-			domiTrans.Rotate(Vector3.right, Space.Self);
+			domiTrans.Rotate(Vector3.right, Space.Self);		//Rotate the domino around x axis
 
-			if(Input.GetButtonDown("Fire1"))
+			if(Input.GetButtonDown("Fire1"))					//if Fire1 is pressed
 			{
-				SetupDomino();
+				SetupDomino();									
 			}
 
 			yield return null;
 		}
 	}
 
+	//Add physic components to a domino
 	private void SetupDomino()
 	{
 		StopAllCoroutines();
+		gameObject.AddComponent<BoxCollider>();
 		gameObject.AddComponent<Rigidbody>();
+
 		rb = GetComponent<Rigidbody>();
 		rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
 	}

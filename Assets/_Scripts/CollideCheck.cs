@@ -13,6 +13,7 @@ public class CollideCheck : MonoBehaviour {
 		{
 			if(Colliding != null)
 			{
+//				collider.gameObject.transform.localRotation.x 
 				Colliding();
 			}
 		}
