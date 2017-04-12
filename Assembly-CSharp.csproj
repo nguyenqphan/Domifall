@@ -50,6 +50,8 @@
      <Compile Include="Assets\_Scripts\Control.cs" />
      <Compile Include="Assets\_Scripts\Domino.cs" />
      <Compile Include="Assets\_Scripts\DuplicationCheck.cs" />
+     <Compile Include="Assets\_Scripts\Knocker.cs" />
+     <Compile Include="Assets\_Scripts\Test.cs" />
  <Reference Include="Facebook.Unity.Settings">
  <HintPath>/Users/nguyenphan/Documents/__CurrentProjects/Domifall/Library/FacebookSDK/Facebook.Unity.Settings.dll</HintPath>
  </Reference>

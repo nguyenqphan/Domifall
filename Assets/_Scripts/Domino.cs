@@ -9,7 +9,9 @@ public class Domino : MonoBehaviour {
 	private float length;						//Distance that a domino have to travel
 	private float minLength = 1f;				//1 unit to move
 	private float maxLength = 3f;				//3 unit to move	
-	private float speed = 0.5f;					//speed of the domino
+	private float speed;						//speed of the domino
+	private float maxSpeed = 1f;
+	private float minSpeed = .5f;					
 	private Rigidbody rb;						//Rigibody of the domino
 
 	void Awake()
@@ -23,8 +25,11 @@ public class Domino : MonoBehaviour {
 		if(!activeDomino)
 		{
 			length = minLength;
+			speed = minSpeed;
+
 		}else{
 			length = maxLength;
+			speed = maxSpeed;
 		}
 
 		StartCoroutine(MoveUp(length));								//Start move up
@@ -40,13 +45,13 @@ public class Domino : MonoBehaviour {
 
 		while(distanceTomove < distance)
 		{
-			distanceTomove += Time.deltaTime;
+			distanceTomove += Time.deltaTime * speed;
 			if(distanceTomove > distance)
 			{
 				distanceTomove = distance;
 			}
 
-			domiTrans.localPosition = new Vector3(localX, localY + distanceTomove, localZ);
+			domiTrans.localPosition = new Vector3(localX, (localY + distanceTomove), localZ);
 
 			yield return null;
 		}
@@ -69,6 +74,7 @@ public class Domino : MonoBehaviour {
 	{
 		while(true)
 		{
+			Debug.Log(domiTrans.localRotation.eulerAngles.x);
 			domiTrans.Rotate(Vector3.right, Space.Self);		//Rotate the domino around x axis
 
 			if(Input.GetButtonDown("Fire1"))					//if Fire1 is pressed

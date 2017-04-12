@@ -8,8 +8,11 @@ public class Control : MonoBehaviour {
 	private bool test = false;
 
 	private Transform collideCheck;				//if collision detected, then continue to place dominos
+	private Transform knockDomino;				//Store the Transform of a game object that is used to initially knock down a domino	
 	private Transform[] dominoTransforms;		//Store the transform component of dominoes
 	private Domino[] dominoes;					//Store the dominoes component
+
+	private Knocker knockComponent;
 
 	private List<Transform> activeDominoes;		//Store active dominoes that have rigibody and box collider
 
@@ -19,6 +22,11 @@ public class Control : MonoBehaviour {
 	private int randomTarget = 1;				//a target for a random number to hit
 	private bool isInteraciveDomino = false;	//Is the current domino interactive?
 	private float preAngleX;					//Cache the rotation of x of previous dominos
+
+	[HideInInspector]
+	public Vector3 dir;
+	private Vector3 PosA;
+	private Vector3 PosB;
 
 	void OnEnable()
 	{
@@ -34,6 +42,8 @@ public class Control : MonoBehaviour {
 	void Awake()
 	{
 		collideCheck = GameObject.FindWithTag("CollideCheck").GetComponent<Transform>();		
+		knockDomino = GameObject.FindWithTag("KnockDomino").GetComponent<Transform>();
+		knockComponent = GameObject.FindWithTag("KnockDomino").GetComponent<Knocker>();
 	}
 
 	// Use this for initialization
@@ -42,11 +52,17 @@ public class Control : MonoBehaviour {
 		dominoes = GetComponentsInChildren<Domino>();							//get all Domino components of the dominoes
 		dominoTransforms[1].gameObject.SetActive(false);						//Set the parent of all dominoes inactive
 		activeDominoes = new List<Transform>();
-		InvokeRepeating("Layout", 1f, 0.1f);
+		InvokeRepeating("Layout", 1f, 0.3f);
+
+//		Debug.DrawLine(Vector3.zero, new Vector3(0, 10f, 0), Color.red, 10f);
 	}
 	
 	// Update is called once per frame
 	void Update () {
+
+	
+
+
 		if(Input.GetButtonDown("Fire1"))
 		{
 			if(!test)
@@ -60,7 +76,7 @@ public class Control : MonoBehaviour {
 	//call this method to keep placing a domino at a certain interval time
 	void InvokeRepeatingDomino()
 	{
-		InvokeRepeating("PlaceDomino", 2f, 0.1f);
+		InvokeRepeating("PlaceDomino", 2f, 0.3f);
 	}
 
 	void Layout()
@@ -75,6 +91,7 @@ public class Control : MonoBehaviour {
 
 		if(currIndex > numOfActiveDomi)
 		{
+			PosB = dominoTransforms[currIndex - 1].position;
 			CancelInvoke();														//Stop placing dominos after it meets the certain condition
 		}
 		
@@ -84,7 +101,6 @@ public class Control : MonoBehaviour {
 	private bool IsActiveCube()
 	{
 		return (currIndex % 2 == 0) && randomTarget == Random.Range(1, 6);
-
 	}
 
 	//a method to place a domino
@@ -94,6 +110,7 @@ public class Control : MonoBehaviour {
 		if(preAngleX < 15 || preAngleX > 345)
 		{
 			dominoTransforms[currIndex].SetParent(null);
+			SaveOriginalPostion();
 			isInteraciveDomino = IsActiveCube();
 			dominoes[currIndex - 2].StartMoveUp(isInteraciveDomino);
 
@@ -106,6 +123,25 @@ public class Control : MonoBehaviour {
 
 			currIndex++;
 		}
+		else
+		{
+			if (dominoTransforms[currIndex - 2].eulerAngles.x < 15 || dominoTransforms[currIndex - 2].eulerAngles.x > 345) {
+				Knock ();	
+				CancelInvoke ();
+				knockComponent.StartMoveUp ();
+				knockComponent.StartRotateDomino ();
+			}else{
+				
+			}
+		}
+	}
+
+	void Knock()
+	{	
+		knockDomino.gameObject.SetActive(true);
+		dir =  (PosB - PosA).normalized;
+		knockDomino.position = PosA + dir * 2 ;
+		Debug.DrawLine(PosA, PosB + dir , Color.red, 60f);
 	}
 
 
@@ -116,5 +152,13 @@ public class Control : MonoBehaviour {
 		trans.gameObject.AddComponent<Rigidbody>();
 		activeDominoes.Add(trans);
 	}
+
+
+	void SaveOriginalPostion()
+	{
+		PosA = PosB;
+		PosB = dominoTransforms[currIndex].position;
+	}
+
 
 }
