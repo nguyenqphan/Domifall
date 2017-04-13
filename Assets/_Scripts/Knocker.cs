@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class Knocker : MonoBehaviour {
 
-	private Transform trans;
-	private float distanceTomove;
-	private float distance = 1.5f;
-	private float speed = 1f;
-	private Rigidbody rb;
-	private Control control;
+	private Transform trans;								//Store the transform component 										
+	private float distanceTomove;							//Store the current distance
+	private float distance = 1.5f;							//Store a distance
+	private float speed = 1f;								//Speed of moving
+	private Rigidbody rb;									//Store rigibody
+	private Control control;								//reference to the Control component 	
 
 	void Awake()
 	{
@@ -19,15 +19,16 @@ public class Knocker : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		trans.gameObject.SetActive(false);
+		trans.gameObject.SetActive(false);					//Set the knock domino inactive
 
 	}
 
 	public void StartMoveUp()
 	{
-		StartCoroutine(MoveUp());
+		StartCoroutine(MoveUp());							
 	}
 
+	//A coroutine to move a domino up
 	private IEnumerator MoveUp()
 	{
 		float localX = trans.localPosition.x;
@@ -47,8 +48,8 @@ public class Knocker : MonoBehaviour {
 			yield return null;
 		}
 
-		StopCoroutine("MoveUp");
-		KnockDown();
+		StopCoroutine("MoveUp");								//Stop Coroutine after it is done
+		KnockDown();											//Call KnockDown()
 	}
 
 	public void StartRotateDomino()
@@ -65,14 +66,14 @@ public class Knocker : MonoBehaviour {
 			yield return null;
 		}
 	}
-
+		
 	private void KnockDown()
 	{
-		gameObject.AddComponent<BoxCollider>();
-		gameObject.AddComponent<Rigidbody>();
-		rb = GetComponent<Rigidbody>();
-		rb.useGravity = false;
-		rb.velocity = -control.dir * 10f;
+		gameObject.AddComponent<BoxCollider>();					//Add a BoxCollider to the game object
+		gameObject.AddComponent<Rigidbody>();					//Add a Rigibody to the game object	
+		rb = GetComponent<Rigidbody>();							
+		rb.useGravity = false;									//dont use gravity
+		rb.velocity = -control.dir * 10f;						//Move the game object in a given direction	
 	}
 
 	void OnCollisionEnter(Collision collision)

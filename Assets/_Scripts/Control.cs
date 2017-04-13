@@ -23,10 +23,11 @@ public class Control : MonoBehaviour {
 	private bool isInteraciveDomino = false;	//Is the current domino interactive?
 	private float preAngleX;					//Cache the rotation of x of previous dominos
 
-	[HideInInspector]
-	public Vector3 dir;
-	private Vector3 PosA;
-	private Vector3 PosB;
+	[HideInInspector]		
+	private Vector3 PosA;						//Cache the position of a domino before moving it
+	private Vector3 PosB;						//Cache the position of a domino before moving it
+	public Vector3 dir;							//A direction for a knock domino (PosB - PosA)
+
 
 	void OnEnable()
 	{
@@ -59,9 +60,6 @@ public class Control : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
-	
-
 
 		if(Input.GetButtonDown("Fire1"))
 		{
@@ -107,41 +105,42 @@ public class Control : MonoBehaviour {
 	void PlaceDomino()
 	{
 		preAngleX = dominoTransforms[currIndex - 1].eulerAngles.x;
+		//A condition to figure out whether or not a domino is falled
 		if(preAngleX < 15 || preAngleX > 345)
 		{
-			dominoTransforms[currIndex].SetParent(null);
-			SaveOriginalPostion();
-			isInteraciveDomino = IsActiveCube();
-			dominoes[currIndex - 2].StartMoveUp(isInteraciveDomino);
+			dominoTransforms[currIndex].SetParent(null);						//remove the domino from its parent
+			SaveOriginalPostion();												//Save the domino position before moving it
+			isInteraciveDomino = IsActiveCube();								//Call a random function to decide whether a domino is active
+			dominoes[currIndex - 2].StartMoveUp(isInteraciveDomino);			//Move the domino up	
 
 			if(isInteraciveDomino)
 			{
-				collideCheck.position = dominoTransforms[currIndex].position;
+				collideCheck.position = dominoTransforms[currIndex].position;	
 				collideCheck.rotation = dominoTransforms[currIndex].rotation;
-				CancelInvoke();
+				CancelInvoke();													//Stop Placing domino
 			}
 
 			currIndex++;
 		}
 		else
 		{
+			//A condition to figure out whether or not active domino falls backward or forward
 			if (dominoTransforms[currIndex - 2].eulerAngles.x < 15 || dominoTransforms[currIndex - 2].eulerAngles.x > 345) {
-				Knock ();	
+				Knock ();														
 				CancelInvoke ();
 				knockComponent.StartMoveUp ();
 				knockComponent.StartRotateDomino ();
-			}else{
-				
 			}
 		}
 	}
 
+	//This method will activate a knock domino
 	void Knock()
 	{	
 		knockDomino.gameObject.SetActive(true);
 		dir =  (PosB - PosA).normalized;
 		knockDomino.position = PosA + dir * 2 ;
-		Debug.DrawLine(PosA, PosB + dir , Color.red, 60f);
+//		Debug.DrawLine(PosA, PosB + dir , Color.red, 60f);
 	}
 
 
@@ -153,7 +152,7 @@ public class Control : MonoBehaviour {
 		activeDominoes.Add(trans);
 	}
 
-
+	//Save postions for finding a knock domino's direction. These are the last two active dominos in a list
 	void SaveOriginalPostion()
 	{
 		PosA = PosB;
