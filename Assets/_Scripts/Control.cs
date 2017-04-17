@@ -4,21 +4,29 @@ using UnityEngine;
 
 public class Control : MonoBehaviour {
 
+	private const int holderAmount = 20;			//The number of dominos will combine into a mesh for better performance
+	private const int numOfActiveDomi = 15;			//The number of active dominoes
+	private List<MeshControl> meshControlList;		//Store MeshControl scripts as a List
+
 	//NEED TO BE DELETED
 	private bool test = false;
+
+	public GameObject dominoHolder;					//a domino holder prefab
+	private List<GameObject> dominoHolderList;		//A List of domino holders
+	private int holderIndex = -1;					//index of the domino holder list
 
 	private Transform collideCheck;				//if collision detected, then continue to place dominos
 	private Transform knockDomino;				//Store the Transform of a game object that is used to initially knock down a domino	
 	private Transform[] dominoTransforms;		//Store the transform component of dominoes
 	private Domino[] dominoes;					//Store the dominoes component
 
-	private Knocker knockComponent;
+	private Knocker knockComponent;				//reference to Knocker script
 
 	private List<Transform> activeDominoes;		//Store active dominoes that have rigibody and box collider
 
 
-	private int numOfActiveDomi = 15;			//The number of active dominoes
-	private int currIndex = 2;					//the current index of an active domino
+
+	private int currIndex = 2;					//the current index of an active domino. Starting with 2 because the first two game objects are parents of dominoes
 	private int randomTarget = 1;				//a target for a random number to hit
 	private bool isInteraciveDomino = false;	//Is the current domino interactive?
 	private float preAngleX;					//Cache the rotation of x of previous dominos
@@ -49,11 +57,15 @@ public class Control : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+
+		dominoHolderList = new List<GameObject>();								//initilize a list of domino
+		meshControlList = new List<MeshControl>();								//initilze a list of MeshControl component scripts
+		CreateNewHolder();														//Create the first DominoHolder
 		dominoTransforms = GetComponentsInChildren<Transform>();				//get all Transform components of the dominoes
 		dominoes = GetComponentsInChildren<Domino>();							//get all Domino components of the dominoes
 		dominoTransforms[1].gameObject.SetActive(false);						//Set the parent of all dominoes inactive
-		activeDominoes = new List<Transform>();
-		InvokeRepeating("Layout", 1f, 0.3f);
+		activeDominoes = new List<Transform>();									//initilize a list of active dominoes
+		InvokeRepeating("Layout", 1f, 0.3f);									
 
 //		Debug.DrawLine(Vector3.zero, new Vector3(0, 10f, 0), Color.red, 10f);
 	}
@@ -82,16 +94,17 @@ public class Control : MonoBehaviour {
 		dominoTransforms[currIndex].SetParent(null);							//remove the domino from its parent
 		dominoes[currIndex - 2].StartMoveUp(isInteraciveDomino);				//Move it up (CurrIndex - 2 becuase the first to gameobjects dont have Domino component))
 		activeDominoes.Add(dominoTransforms[currIndex]);
-
-
 //		AddActiveDomino(dominoTransforms[currIndex]);							//Add the domino to active domino list
+
 		currIndex++;
 
-		if(currIndex > numOfActiveDomi)
+		if(currIndex  - 1 > numOfActiveDomi)									//Subtract 1 becuase becuase currIndex startd with 2 so the number of active dominos can be flexibly change for testing.
 		{
 			PosB = dominoTransforms[currIndex - 1].position;
-			CancelInvoke();														//Stop placing dominos after it meets the certain condition
+			CancelInvoke();														//Stop placing dominos after it meets a certain condition
 		}
+
+
 		
 	}
 
@@ -120,7 +133,18 @@ public class Control : MonoBehaviour {
 				CancelInvoke();													//Stop Placing domino
 			}
 
+			dominoTransforms[currIndex - numOfActiveDomi].parent = dominoHolderList[holderIndex].transform;										//add a domino to a parent
+			meshControlList[holderIndex].meshFilterList.Add(dominoTransforms[currIndex - numOfActiveDomi].GetComponent<MeshFilter>());			//add a Meshfiler to a MeshFilterList to combine
+			meshControlList[holderIndex].Combine();													
+			dominoTransforms[currIndex - numOfActiveDomi].gameObject.SetActive(false);
+
 			currIndex++;
+
+			//Creat a new domino holder after every 50 dominos
+			if((currIndex - numOfActiveDomi - 2)  % holderAmount == 0 )
+			{
+				CreateNewHolder();
+			}
 		}
 		else
 		{
@@ -159,5 +183,10 @@ public class Control : MonoBehaviour {
 		PosB = dominoTransforms[currIndex].position;
 	}
 
-
+	void CreateNewHolder()
+	{
+		holderIndex++;
+		dominoHolderList.Add(Instantiate(dominoHolder) as GameObject);
+		meshControlList.Add(dominoHolderList[holderIndex].GetComponent<MeshControl>());
+	}
 }

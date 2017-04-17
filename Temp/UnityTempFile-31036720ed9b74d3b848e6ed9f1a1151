@@ -94,6 +94,7 @@
 'Assets/_Scripts/Domino.cs'
 'Assets/_Scripts/DuplicationCheck.cs'
 'Assets/_Scripts/Knocker.cs'
+'Assets/_Scripts/MeshControl.cs'
 'Assets/_Scripts/Test.cs'
 -r:'/Applications/Unity/Unity.app/Contents/Mono/lib/mono/unity/System.Runtime.Serialization.dll'
 -r:'/Applications/Unity/Unity.app/Contents/Mono/lib/mono/unity/System.Xml.Linq.dll'
