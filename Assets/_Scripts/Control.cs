@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Control : MonoBehaviour {
 
-	private const int holderAmount = 20;			//The number of dominos will combine into a mesh for better performance
+	private const int holderAmount = 100;			//The number of dominos will combine into a mesh for better performance
 	private const int numOfActiveDomi = 15;			//The number of active dominoes
 	private List<MeshControl> meshControlList;		//Store MeshControl scripts as a List
 
@@ -59,7 +59,7 @@ public class Control : MonoBehaviour {
 	void Start () {
 
 		dominoHolderList = new List<GameObject>();								//initilize a list of domino
-		meshControlList = new List<MeshControl>();								//initilze a list of MeshControl component scripts
+		meshControlList = new List<MeshControl>();								//initilize a list of MeshControl component scripts
 		CreateNewHolder();														//Create the first DominoHolder
 		dominoTransforms = GetComponentsInChildren<Transform>();				//get all Transform components of the dominoes
 		dominoes = GetComponentsInChildren<Domino>();							//get all Domino components of the dominoes

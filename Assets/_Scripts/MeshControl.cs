@@ -7,38 +7,31 @@ using UnityEngine;
 public class MeshControl : MonoBehaviour {
 
 	public List<MeshFilter> meshFilterList = new List<MeshFilter>();
-	private int i;
+	private int last;
 	private MeshFilter mainMeshFilter;
 	private Matrix4x4 myTrans;
+	private CombineInstance[] combine = new CombineInstance[2];
 
 	void Awake()
 	{
 		mainMeshFilter = GetComponent<MeshFilter>();
+		mainMeshFilter.mesh = new Mesh();					//Without this condition, we will get a warning "Combine instance mesh 0 is null" becuase there is no mesh for a dominoHolder when it first creates.
 		meshFilterList.Add(mainMeshFilter);
 		myTrans = transform.worldToLocalMatrix;
 	}
 
+	//This medthod combines the mesh of the first and last element in the meshFilterList.
 	public void Combine()
 	{
-		CombineInstance[] combine = new CombineInstance[meshFilterList.Count];
+		last = meshFilterList.Count - 1;
 
-		i = 0;
+		combine[0].mesh = meshFilterList[0].sharedMesh;
+		combine[0].transform = myTrans * meshFilterList[0].transform.localToWorldMatrix;
 
-		//Without this condition, we will get a warning "Combine instance mesh 0 is null"
-		//becuase there is no mesh for a dominoHolder when it first creates.
-		if(meshFilterList[i].mesh == null)
-		{
-			meshFilterList[i].mesh = new Mesh();
-		}
+		combine[1].mesh = meshFilterList[last].sharedMesh;
+		combine[1].transform = myTrans * meshFilterList[last].transform.localToWorldMatrix;
 
-		while(i < meshFilterList.Count)
-		{
-			combine[i].mesh = meshFilterList[i].sharedMesh;
-			combine[i].transform = myTrans * meshFilterList[i].transform.localToWorldMatrix;
-			i++;
-		}
-
-		transform.GetComponent<MeshFilter>().mesh = new Mesh();
-		transform.GetComponent<MeshFilter>().mesh.CombineMeshes(combine, true);
+		meshFilterList[0].mesh = new Mesh();
+		meshFilterList[0].mesh.CombineMeshes(combine, true);
 	}
 }
