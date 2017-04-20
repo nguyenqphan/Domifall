@@ -10,8 +10,11 @@ public class Domino : MonoBehaviour {
 	private float minLength = 1f;				//1 unit to move
 	private float maxLength = 3f;				//3 unit to move	
 	private float speed;						//speed of the domino
-	private float maxSpeed = 1f;
-	private float minSpeed = .5f;					
+//	private float maxSpeed = 1f;
+//	private float minSpeed = .5f;	
+
+	private float maxSpeed = 5f;
+	private float minSpeed = 3f;
 	private Rigidbody rb;						//Rigibody of the domino
 
 	void Awake()

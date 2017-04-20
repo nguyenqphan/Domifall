@@ -111,7 +111,7 @@ public class Control : MonoBehaviour {
 	//Rondom method to decide if a domino should be interactive
 	private bool IsActiveCube()
 	{
-		return (currIndex % 2 == 0) && randomTarget == Random.Range(1, 6);
+		return (currIndex % 2 == 0) && randomTarget == Random.Range(1, 100);
 	}
 
 	//a method to place a domino
@@ -121,6 +121,16 @@ public class Control : MonoBehaviour {
 		//A condition to figure out whether or not a domino is falled
 		if(preAngleX < 15 || preAngleX > 345)
 		{
+			if(currIndex > dominoTransforms.Length  - 1)
+			{
+				Knock ();														
+				CancelInvoke ();
+				knockComponent.StartMoveUp ();
+				knockComponent.StartRotateDomino ();
+
+				return;
+			}
+
 			dominoTransforms[currIndex].SetParent(null);						//remove the domino from its parent
 			SaveOriginalPostion();												//Save the domino position before moving it
 			isInteraciveDomino = IsActiveCube();								//Call a random function to decide whether a domino is active
@@ -134,7 +144,9 @@ public class Control : MonoBehaviour {
 			}
 
 			dominoTransforms[currIndex - numOfActiveDomi].parent = dominoHolderList[holderIndex].transform;										//add a domino to a parent
-			meshControlList[holderIndex].meshFilterList.Add(dominoTransforms[currIndex - numOfActiveDomi].GetComponent<MeshFilter>());			//add a Meshfiler to a MeshFilterList to combine
+//			meshControlList[holderIndex].meshFilters.Add(dominoTransforms[currIndex - numOfActiveDomi].GetComponent<MeshFilter>());			//add a Meshfiler to a MeshFilterList to combine
+			meshControlList[holderIndex].meshFilters[1] = dominoTransforms[currIndex - numOfActiveDomi].GetComponent<MeshFilter>();
+
 			meshControlList[holderIndex].Combine();													
 			dominoTransforms[currIndex - numOfActiveDomi].gameObject.SetActive(false);
 
@@ -149,7 +161,7 @@ public class Control : MonoBehaviour {
 		else
 		{
 			//A condition to figure out whether or not active domino falls backward or forward
-			if (dominoTransforms[currIndex - 2].eulerAngles.x < 15 || dominoTransforms[currIndex - 2].eulerAngles.x > 345) {
+			if (dominoTransforms[currIndex - 2].eulerAngles.x < 15 || dominoTransforms[currIndex - 2].eulerAngles.x > 345 ) {
 				Knock ();														
 				CancelInvoke ();
 				knockComponent.StartMoveUp ();
