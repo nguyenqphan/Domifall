@@ -10,15 +10,18 @@ public class MeshControl : MonoBehaviour {
 	private const int DOMINO_VERT_UV = 24;
 	private const int DOMINO_TRIANGlE = 36;
 
+	private Vector3[] vertsArray;
+	private Vector2[] uvsArray;
+	private int[] triangleArray;
+	private Vector3 tempVector3Zero = new Vector3(0f,0f,0f);
+
+
 	[HideInInspector]
 	public MeshFilter[] meshFilters = new MeshFilter[2];
 	private CombineInstance[] combine;
-	private List<Vector3> vertices;
-	private List<Vector2> uvs ;
-	private List<int> triangles ;
 
-	private int numOfCombineDomi = 1;
-	private int numOfRemovedDomi = 1;
+	private int numOfCombineDomi = 0;
+	private int numOfRemovedDomi = 0;
 
 	private MeshFilter mainMeshFilter;
 	private Matrix4x4 myTrans;
@@ -34,9 +37,6 @@ public class MeshControl : MonoBehaviour {
 	void Start()
 	{
 		combine		 	 = new CombineInstance[2];
-		vertices		 = new List<Vector3>();
-		uvs 		     = new List<Vector2>();
-		triangles 		 = new List<int>();
 
 		mainMeshFilter.mesh = new Mesh();					//Without this condition, we will get a warning "Combine instance mesh 0 is null" becuase there is no mesh for a dominoHolder when it first creates.
 		meshFilters[0] = mainMeshFilter;
@@ -66,25 +66,29 @@ public class MeshControl : MonoBehaviour {
 			LoadLastMesh();
 		}
 
-//		numOfRemovedDomi++;
+		numOfRemovedDomi++;
+		int meshLength = meshFilters[0].mesh.vertices.Length;
 
-//		Debug.Log(vertices.Count);
+		for(int i = meshLength - DOMINO_VERT_UV * numOfRemovedDomi; i < meshLength; i++ )
+		{
+			vertsArray[i] = tempVector3Zero;
+		}
 
-		vertices.RemoveRange(vertices.Count - DOMINO_VERT_UV * numOfRemovedDomi, DOMINO_VERT_UV * numOfRemovedDomi);
-		uvs.RemoveRange(uvs.Count - DOMINO_VERT_UV * numOfRemovedDomi, DOMINO_VERT_UV * numOfRemovedDomi);
-		triangles.RemoveRange(triangles.Count - DOMINO_TRIANGlE * numOfRemovedDomi , DOMINO_TRIANGlE * numOfRemovedDomi);
+		meshFilters[0].mesh.vertices = vertsArray;
 
-		meshFilters[0].mesh = new Mesh();
-		meshFilters[0].mesh.vertices = vertices.ToArray();
-		meshFilters[0].mesh.uv = uvs.ToArray();
-		meshFilters[0].mesh.triangles = triangles.ToArray();
 	}
 
 	public void LoadLastMesh()
 	{
-		vertices.AddRange(meshFilters[0].mesh.vertices);
-		uvs.AddRange(meshFilters[0].mesh.uv);
-		triangles.AddRange(meshFilters[0].mesh.triangles);
+		
+		vertsArray = new Vector3[meshFilters[0].mesh.vertices.Length];
+		uvsArray = new Vector2[meshFilters[0].mesh.uv.Length];
+		triangleArray = new int[meshFilters[0].mesh.triangles.Length]; 
+
+		vertsArray = meshFilters[0].mesh.vertices;
+		uvsArray = meshFilters[0].mesh.uv;
+		triangleArray = meshFilters[0].mesh.triangles;
+
 	}
 
 }
