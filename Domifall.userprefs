@@ -1,9 +1,9 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/_Scripts/MeshControl.cs">
+  <MonoDevelop.Ide.Workbench>
     <Files>
-      <File FileName="Assets/_Scripts/Control.cs" Line="119" Column="3" />
-      <File FileName="Assets/_Scripts/MeshControl.cs" Line="81" Column="58" />
+      <File FileName="Assets/_Scripts/Control.cs" Line="1" Column="1" />
+      <File FileName="Assets/_Scripts/MeshControl.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

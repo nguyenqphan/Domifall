@@ -8,13 +8,25 @@ public class Control : MonoBehaviour {
 	private const int numOfActiveDomi = 15;			//The number of active dominoes
 	private List<MeshControl> meshControlList;		//Store MeshControl scripts as a List
 
+	private int lastDominoIndex = 0;
+
+	private  int fallenAmount = 0;
+	private int offsetDomiIndex = 9;
+
 	//NEED TO BE DELETED
 	private bool test = false;
 
 	public GameObject dominoHolder;					//a domino holder prefab
+
 	private List<GameObject> dominoHolderList;		//A List of domino holders
 	private int holderIndex = -1;					//index of the domino holder list
 
+	private List<GameObject> fallenHolderList;
+	private int fallenHolderIndex = -1;
+
+	private List<MeshControl> fallenMeshControlList;
+
+	private Transform triggerCheck;				//on trigger enter, remove a domino from a  combined mesh and combine another fallen domino to another mesh. 
 	private Transform collideCheck;				//if collision detected, then continue to place dominos
 	private Transform knockDomino;				//Store the Transform of a game object that is used to initially knock down a domino	
 	private Transform[] dominoTransforms;		//Store the transform component of dominoes
@@ -31,20 +43,23 @@ public class Control : MonoBehaviour {
 	private bool isInteraciveDomino = false;	//Is the current domino interactive?
 	private float preAngleX;					//Cache the rotation of x of previous dominos
 
-	[HideInInspector]		
+		
 	private Vector3 PosA;						//Cache the position of a domino before moving it
 	private Vector3 PosB;						//Cache the position of a domino before moving it
+	[HideInInspector]	
 	public Vector3 dir;							//A direction for a knock domino (PosB - PosA)
 
 
 	void OnEnable()
 	{
-		CollideCheck.Colliding += InvokeRepeatingDomino;										//Register an event
+		CollideCheck.Colliding  += InvokeRepeatingDomino;										//Register an event
+		TriggerCheck.Triggering += PreviousDomino;
 	}
 
 	void OnDisable()
 	{
-		CollideCheck.Colliding -= InvokeRepeatingDomino;										//Unregister an event
+		CollideCheck.Colliding  -= InvokeRepeatingDomino;										//Unregister an event
+		TriggerCheck.Triggering -= PreviousDomino;
 	}
 
 
@@ -52,22 +67,24 @@ public class Control : MonoBehaviour {
 	{
 		collideCheck = GameObject.FindWithTag("CollideCheck").GetComponent<Transform>();		
 		knockDomino = GameObject.FindWithTag("KnockDomino").GetComponent<Transform>();
+		triggerCheck = GameObject.FindWithTag("TriggerCheck").GetComponent<Transform>();
 		knockComponent = GameObject.FindWithTag("KnockDomino").GetComponent<Knocker>();
 	}
 
 	// Use this for initialization
-	void Start () {
-
+	void Start ()
+	{
 		dominoHolderList = new List<GameObject>();								//initilize a list of domino
 		meshControlList = new List<MeshControl>();								//initilize a list of MeshControl component scripts
+		fallenHolderList = new List<GameObject>();
+		fallenMeshControlList = new List<MeshControl>();
 		CreateNewHolder();														//Create the first DominoHolder
+		CreateNewFallenHolder();
 		dominoTransforms = GetComponentsInChildren<Transform>();				//get all Transform components of the dominoes
 		dominoes = GetComponentsInChildren<Domino>();							//get all Domino components of the dominoes
 		dominoTransforms[1].gameObject.SetActive(false);						//Set the parent of all dominoes inactive
 		activeDominoes = new List<Transform>();									//initilize a list of active dominoes
-		InvokeRepeating("Layout", 1f, 0.3f);									
-
-//		Debug.DrawLine(Vector3.zero, new Vector3(0, 10f, 0), Color.red, 10f);
+		InvokeRepeating("Layout", 1f, 0.3f);		
 	}
 	
 	// Update is called once per frame
@@ -103,9 +120,6 @@ public class Control : MonoBehaviour {
 			PosB = dominoTransforms[currIndex - 1].position;
 			CancelInvoke();														//Stop placing dominos after it meets a certain condition
 		}
-
-
-		
 	}
 
 	//Rondom method to decide if a domino should be interactive
@@ -118,16 +132,20 @@ public class Control : MonoBehaviour {
 	void PlaceDomino()
 	{
 		preAngleX = dominoTransforms[currIndex - 1].eulerAngles.x;
+													
 		//A condition to figure out whether or not a domino is falled
 		if(preAngleX < 15 || preAngleX > 345)
 		{
+			//Reached the last domino
 			if(currIndex > dominoTransforms.Length  - 1)
 			{
+				MoveTriggerCheck();
 				Knock ();														
 				CancelInvoke ();
 				knockComponent.StartMoveUp ();
 				knockComponent.StartRotateDomino ();
-
+				lastDominoIndex = currIndex - numOfActiveDomi  -2;
+			
 				return;
 			}
 
@@ -140,6 +158,7 @@ public class Control : MonoBehaviour {
 			{
 				collideCheck.position = dominoTransforms[currIndex].position;	
 				collideCheck.rotation = dominoTransforms[currIndex].rotation;
+
 				CancelInvoke();													//Stop Placing domino
 			}
 
@@ -160,7 +179,10 @@ public class Control : MonoBehaviour {
 		}
 		else
 		{
-			//A condition to figure out whether or not active domino falls backward or forward
+			lastDominoIndex = currIndex - numOfActiveDomi - 2;
+			MoveTriggerCheck();
+
+			//if the domino falls backward, it would knock down the previous which is dominoTransforms[curr - 2]
 			if (dominoTransforms[currIndex - 2].eulerAngles.x < 15 || dominoTransforms[currIndex - 2].eulerAngles.x > 345 ) {
 				Knock ();														
 				CancelInvoke ();
@@ -201,4 +223,64 @@ public class Control : MonoBehaviour {
 		dominoHolderList.Add(Instantiate(dominoHolder) as GameObject);
 		meshControlList.Add(dominoHolderList[holderIndex].GetComponent<MeshControl>());
 	}
+
+	void CreateNewFallenHolder()
+	{
+		fallenHolderIndex++;
+		fallenHolderList.Add(Instantiate(dominoHolder) as GameObject);
+		fallenMeshControlList.Add(fallenHolderList[fallenHolderIndex].GetComponent<MeshControl>());
+	}
+
+	void MoveTriggerCheck()
+	{
+//		Debug.Log(currIndex + " current index");
+		triggerCheck.position = dominoTransforms[currIndex - offsetDomiIndex].position;
+		triggerCheck.rotation = dominoTransforms[currIndex - offsetDomiIndex].rotation;
+
+	}
+
+	void PreviousDomino()
+	{
+//		offsetDomiIndex++;
+
+		CombineFallenDomino();
+
+		MoveTriggerCheck();
+	}
+
+	void CombineFallenDomino()
+	{
+		dominoTransforms[currIndex - 1].parent = fallenHolderList[fallenHolderIndex].transform;
+		fallenMeshControlList[fallenHolderIndex].meshFilters[1] = dominoTransforms[currIndex - 1].GetComponent<MeshFilter>();
+
+		fallenMeshControlList[fallenHolderIndex].Combine();													
+		dominoTransforms[currIndex - 1].gameObject.SetActive(false);
+
+		Decombine();
+		currIndex--;
+		fallenAmount++;
+//		Debug.Log(fallenAmount);
+
+		if(fallenAmount % holderAmount == 0)
+		{
+			CreateNewFallenHolder();
+		}
+	}
+
+	void Decombine()
+	{
+		if (holderIndex >= 0) {
+
+			dominoTransforms[currIndex - numOfActiveDomi - 1].SetParent(null);
+			dominoTransforms[currIndex - numOfActiveDomi - 1].gameObject.SetActive(true);
+
+			meshControlList [holderIndex].RemoveLastSubmesh ();
+			lastDominoIndex--;
+			if (lastDominoIndex % 100 == 0) {
+				holderIndex--;
+			}
+		}
+
+	}
+
 }

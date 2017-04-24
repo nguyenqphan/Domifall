@@ -13,7 +13,7 @@ public class Domino : MonoBehaviour {
 //	private float maxSpeed = 1f;
 //	private float minSpeed = .5f;	
 
-	private float maxSpeed = 5f;
+	private float maxSpeed = 5f;				//TEST
 	private float minSpeed = 3f;
 	private Rigidbody rb;						//Rigibody of the domino
 

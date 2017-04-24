@@ -7,7 +7,7 @@ public class Knocker : MonoBehaviour {
 	private Transform trans;								//Store the transform component 										
 	private float distanceTomove;							//Store the current distance
 	private float distance = 1.5f;							//Store a distance
-	private float speed = 1f;								//Speed of moving
+	private float speed = .5f;								//Speed of moving
 	private Rigidbody rb;									//Store rigibody
 	private Control control;								//reference to the Control component 	
 
