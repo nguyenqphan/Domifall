@@ -10,10 +10,14 @@ public class MeshControl : MonoBehaviour {
 	private const int DOMINO_VERT_UV = 24;
 	private const int DOMINO_TRIANGlE = 36;
 
+	private int meshLength;
+	private int i;
+
 	private Vector3[] vertsArray;
 	private Vector2[] uvsArray;
 	private int[] triangleArray;
 	private Vector3 tempVector3Zero = new Vector3(0f,0f,0f);
+
 
 
 	[HideInInspector]
@@ -67,9 +71,8 @@ public class MeshControl : MonoBehaviour {
 		}
 
 		numOfRemovedDomi++;
-		int meshLength = meshFilters[0].mesh.vertices.Length;
 
-		for(int i = meshLength - DOMINO_VERT_UV * numOfRemovedDomi; i < meshLength; i++ )
+		for(i = meshLength - DOMINO_VERT_UV * numOfRemovedDomi; i < meshLength; i++)
 		{
 			vertsArray[i] = tempVector3Zero;
 		}
@@ -80,7 +83,7 @@ public class MeshControl : MonoBehaviour {
 
 	public void LoadLastMesh()
 	{
-		
+	    meshLength = meshFilters[0].mesh.vertices.Length;	
 		vertsArray = new Vector3[meshFilters[0].mesh.vertices.Length];
 		uvsArray = new Vector2[meshFilters[0].mesh.uv.Length];
 		triangleArray = new int[meshFilters[0].mesh.triangles.Length]; 
@@ -88,7 +91,6 @@ public class MeshControl : MonoBehaviour {
 		vertsArray = meshFilters[0].mesh.vertices;
 		uvsArray = meshFilters[0].mesh.uv;
 		triangleArray = meshFilters[0].mesh.triangles;
-
 	}
 
 }

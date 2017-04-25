@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Domino : MonoBehaviour {
 
+	public delegate void ActionMoveGameOverCheck();
+	public static event ActionMoveGameOverCheck GameOverCheck;
+
 	private Transform domiTrans;				//Store the transfrom component of the domino
 	private float distanceTomove;				//Distance that a domino have to travel
 	private float length;						//Distance that a domino have to travel
@@ -75,10 +78,15 @@ public class Domino : MonoBehaviour {
 	//if called, this method will be executed every frame.
 	private IEnumerator RotateDomino()
 	{
+		if(GameOverCheck != null)
+		{
+			GameOverCheck();
+		}
+
 		while(true)
 		{
 //			Debug.Log(domiTrans.localRotation.eulerAngles.x);
-//			domiTrans.Rotate(Vector3.right, Space.Self);		//Rotate the domino around x axis
+			domiTrans.Rotate(Vector3.right, Space.Self);		//Rotate the domino around x axis
 
 			if(Input.GetButtonDown("Fire1"))					//if Fire1 is pressed
 			{
@@ -87,6 +95,8 @@ public class Domino : MonoBehaviour {
 
 			yield return null;
 		}
+
+
 	}
 
 	//Add physic components to a domino
