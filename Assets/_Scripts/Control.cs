@@ -5,8 +5,12 @@ using UnityEngine;
 public class Control : MonoBehaviour {
 
 	private const int holderAmount = 100;			//The number of dominos will combine into a mesh for better performance
-	private const int numOfActiveDomi = 15;			//The number of active dominoes
+	private const int numOfActiveDomi = 10;			//The number of active dominoes
 	private List<MeshControl> meshControlList;		//Store MeshControl scripts as a List
+
+	private string placeDomino = "PlaceDomino";
+	private string layout = "Layout";
+	private string fire1Button = "Fire1";
 
 	private int lastDominoIndex = 0;				//Store the last domino index
 
@@ -96,13 +100,14 @@ public class Control : MonoBehaviour {
 		dominoes = GetComponentsInChildren<Domino>();							//get all Domino components of the dominoes
 		dominoTransforms[1].gameObject.SetActive(false);						//Set the parent of all dominoes inactive
 		activeDominoes = new List<Transform>();									//initilize a list of active dominoes
-		InvokeRepeating("Layout", 1f, 0.3f);		
+		InvokeRepeating(layout, 1f, 0.3f);	
+
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
-		if(Input.GetButtonDown("Fire1"))
+		if(Input.GetButtonDown(fire1Button))
 		{
 			if(!test)
 			{
@@ -115,7 +120,7 @@ public class Control : MonoBehaviour {
 	//call this method to keep placing a domino at a certain interval time
 	void InvokeRepeatingDomino()
 	{
-		InvokeRepeating("PlaceDomino", 2f, 0.3f);
+		InvokeRepeating(placeDomino, 1f, 0.3f);
 	}
 
 	void Layout()
@@ -130,14 +135,14 @@ public class Control : MonoBehaviour {
 		if(currIndex  - 1 > numOfActiveDomi)									//Subtract 1 becuase becuase currIndex startd with 2 so the number of active dominos can be flexibly change for testing.
 		{
 			PosB = dominoTransforms[currIndex - 1].position;
-			CancelInvoke();														//Stop placing dominos after it meets a certain condition
+			CancelInvoke(layout);														//Stop placing dominos after it meets a certain condition
 		}
 	}
 
 	//Rondom method to decide if a domino should be interactive
 	private bool IsActiveCube()
 	{
-		return (currIndex % 2 == 0) && randomTarget == Random.Range(1, 10);
+		return (currIndex % 2 == 0) && randomTarget == Random.Range(1, 100);
 	}
 
 	//a method to place a domino
@@ -176,7 +181,7 @@ public class Control : MonoBehaviour {
 				CancelInvoke();													//Stop Placing domino
 			}
 
-			dominoTransforms[currIndex - numOfActiveDomi].parent = dominoHolderList[holderIndex].transform;										//add a domino to a parent
+//			dominoTransforms[currIndex - numOfActiveDomi].parent = dominoHolderList[holderIndex].transform;										//add a domino to a parent
 //			meshControlList[holderIndex].meshFilters.Add(dominoTransforms[currIndex - numOfActiveDomi].GetComponent<MeshFilter>());			//add a Meshfiler to a MeshFilterList to combine
 			meshControlList[holderIndex].meshFilters[1] = dominoTransforms[currIndex - numOfActiveDomi].GetComponent<MeshFilter>();
 
@@ -278,7 +283,7 @@ public class Control : MonoBehaviour {
 
 	void CombineFallenDomino()
 	{
-		dominoTransforms[currIndex - 1].parent = fallenHolderList[fallenHolderIndex].transform;
+//		dominoTransforms[currIndex - 1].parent = fallenHolderList[fallenHolderIndex].transform;
 		fallenMeshControlList[fallenHolderIndex].meshFilters[1] = dominoTransforms[currIndex - 1].GetComponent<MeshFilter>();
 
 		fallenMeshControlList[fallenHolderIndex].Combine();													
@@ -298,7 +303,7 @@ public class Control : MonoBehaviour {
 	{
 		if (holderIndex >= 0) {
 
-			dominoTransforms[currIndex - numOfActiveDomi - 1].SetParent(null);
+//			dominoTransforms[currIndex - numOfActiveDomi - 1].SetParent(null);
 			dominoTransforms[currIndex - numOfActiveDomi - 1].gameObject.SetActive(true);
 
 			meshControlList [holderIndex].RemoveLastSubmesh ();

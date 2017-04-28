@@ -10,6 +10,12 @@ public class Knocker : MonoBehaviour {
 	private float speed = .5f;								//Speed of moving
 	private Rigidbody rb;									//Store rigibody
 	private Control control;								//reference to the Control component 	
+	private float localX;
+	private float localY;
+	private float localZ;
+
+	private Vector3 tempPos;
+	private bool isMoveUpCalled = false;
 
 	void Awake()
 	{
@@ -19,6 +25,8 @@ public class Knocker : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+//		StartCoroutine(MoveUp());
+
 		trans.gameObject.SetActive(false);					//Set the knock domino inactive
 
 	}
@@ -31,9 +39,16 @@ public class Knocker : MonoBehaviour {
 	//A coroutine to move a domino up
 	private IEnumerator MoveUp()
 	{
-		float localX = trans.localPosition.x;
-		float localY = trans.localPosition.y;
-		float localZ = trans.localPosition.z;
+//		if(!isMoveUpCalled){
+//			isMoveUpCalled = true;
+//			StopCoroutine("MoveUp");
+//			yield return null;
+//		}
+			
+	   	 tempPos = trans.position;
+		 localX = trans.localPosition.x;
+		 localY = trans.localPosition.y;
+		 localZ = trans.localPosition.z;
 
 		while(distanceTomove < distance)
 		{
@@ -43,7 +58,10 @@ public class Knocker : MonoBehaviour {
 				distanceTomove = distance;
 			}
 
-			trans.localPosition = new Vector3(localX, (localY + distanceTomove), localZ);
+			tempPos.y = localY + distanceTomove;
+			trans.localPosition = tempPos;
+
+//			trans.localPosition = new Vector3(localX, (localY + distanceTomove), localZ);
 
 			yield return null;
 		}

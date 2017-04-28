@@ -7,6 +7,10 @@ public class Domino : MonoBehaviour {
 	public delegate void ActionMoveGameOverCheck();
 	public static event ActionMoveGameOverCheck GameOverCheck;
 
+	private string moveUp = "MoveUp";
+	private string activeDominoTag = "ActiveDomino";
+	private string fireButton = "Fire1";
+
 	private Transform domiTrans;				//Store the transfrom component of the domino
 	private float distanceTomove;				//Distance that a domino have to travel
 	private float length;						//Distance that a domino have to travel
@@ -20,9 +24,15 @@ public class Domino : MonoBehaviour {
 	private float minSpeed = 3f;
 	private Rigidbody rb;						//Rigibody of the domino
 
+	private float localX;
+	private float localY;
+	private float localZ;
+	private Vector3 tempPos;					//Store a position of the domino
+
 	void Awake()
 	{
-		domiTrans = GetComponent<Transform>();					
+		domiTrans = GetComponent<Transform>();	
+		tempPos = domiTrans.position;			
 	}
 
 	public void StartMoveUp(bool activeDomino)
@@ -45,9 +55,9 @@ public class Domino : MonoBehaviour {
 	//A coroutin method to move an domino up
 	private IEnumerator MoveUp(float distance)
 	{
-		float localX = domiTrans.localPosition.x;
-		float localY = domiTrans.localPosition.y;
-		float localZ = domiTrans.localPosition.z;
+		 localX = domiTrans.localPosition.x;
+		 localY = domiTrans.localPosition.y;
+		 localZ = domiTrans.localPosition.z;
 
 		while(distanceTomove < distance)
 		{
@@ -57,17 +67,22 @@ public class Domino : MonoBehaviour {
 				distanceTomove = distance;
 			}
 
-			domiTrans.localPosition = new Vector3(localX, (localY + distanceTomove), localZ);
+			tempPos.y = localY + distanceTomove;
+			domiTrans.localPosition = tempPos;
+
+//			domiTrans.localPosition = new Vector3(localX, (localY + distanceTomove), localZ);
+//			domiTrans.localRotation.y = localZ + distanceTomove;
+
 
 			yield return null;
 		}
 
-		StopCoroutine("MoveUp");
+		StopCoroutine(moveUp);
 
 		//if distance is equal to max length, it is an active domino. 
 		if(distance == maxLength)
 		{
-			gameObject.tag = "ActiveDomino";					//Change the tag of an domino to ActiveDomino
+			gameObject.tag = activeDominoTag;					//Change the tag of an domino to ActiveDomino
 			StartCoroutine(RotateDomino());						//Call RatateDomino() to rotate the domino. Will read input every frame in this method
 		}else{
 			SetupDomino();										//This function will Add physic components to a domino
@@ -88,7 +103,7 @@ public class Domino : MonoBehaviour {
 //			Debug.Log(domiTrans.localRotation.eulerAngles.x);
 			domiTrans.Rotate(Vector3.right, Space.Self);		//Rotate the domino around x axis
 
-			if(Input.GetButtonDown("Fire1"))					//if Fire1 is pressed
+			if(Input.GetButtonDown(fireButton))					//if Fire1 is pressed
 			{
 				SetupDomino();									
 			}

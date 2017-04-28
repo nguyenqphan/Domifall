@@ -43,6 +43,7 @@ public class MeshControl : MonoBehaviour {
 		combine		 	 = new CombineInstance[2];
 
 		mainMeshFilter.mesh = new Mesh();					//Without this condition, we will get a warning "Combine instance mesh 0 is null" becuase there is no mesh for a dominoHolder when it first creates.
+//		mainMeshFilter.mesh = new Mesh();
 		meshFilters[0] = mainMeshFilter;
 	}
 
@@ -58,6 +59,7 @@ public class MeshControl : MonoBehaviour {
 		combine[1].transform = myTrans * meshFilters[1].transform.localToWorldMatrix;
 
 		meshFilters[0].mesh = new Mesh();
+//		meshFilters[0].mesh.Clear();
 		meshFilters[0].mesh.CombineMeshes(combine, true);
 	}
 
