@@ -11,7 +11,6 @@ public class TriggerCheck : MonoBehaviour {
 	void OnTriggerEnter(Collider collider)
 	{
 		
-
 		if(Triggering != null && isTriggered)
 		{
 			Triggering();

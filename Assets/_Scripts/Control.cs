@@ -40,6 +40,7 @@ public class Control : MonoBehaviour {
 	private Domino[] dominoes;					//Store the dominoes component
 
 	private Knocker knockComponent;				//reference to Knocker script
+	private CameraMove cameraMove;
 
 	private List<Transform> activeDominoes;		//Store active dominoes that have rigibody and box collider
 
@@ -84,6 +85,7 @@ public class Control : MonoBehaviour {
 		gameoverCheck = GameObject.FindWithTag("GameOverCheck").GetComponent<Transform>();
 		triggerCheck = GameObject.FindWithTag("TriggerCheck").GetComponent<Transform>();
 		knockComponent = GameObject.FindWithTag("KnockDomino").GetComponent<Knocker>();
+		cameraMove = GameObject.FindWithTag("CameraHolder").GetComponent<CameraMove>();
 
 	}
 
@@ -142,13 +144,20 @@ public class Control : MonoBehaviour {
 	//Rondom method to decide if a domino should be interactive
 	private bool IsActiveCube()
 	{
-		return (currIndex % 2 == 0) && randomTarget == Random.Range(1, 100);
+//		return (currIndex % 2 == 0) && randomTarget == Random.Range(1, 100);
+		return currIndex % 20 == 0;
+
+
 	}
 
 	//a method to place a domino
 	void PlaceDomino()
 	{
 		if(isGameOver) {return;}											//if isGameOver is true, no need to do the rest
+
+		MoveCamera();
+
+//		cameraMove.MoveToTarget(dominoTransforms[currIndex - 1]);
 
 		preAngleX = dominoTransforms[currIndex - 1].eulerAngles.x;
 													
@@ -290,8 +299,11 @@ public class Control : MonoBehaviour {
 		dominoTransforms[currIndex - 1].gameObject.SetActive(false);
 
 		Decombine();
+		MoveCamera();
 		currIndex--;
 		fallenAmount++;
+
+
 
 		if(fallenAmount % holderAmount == 0)
 		{
@@ -313,6 +325,14 @@ public class Control : MonoBehaviour {
 			}
 		}
 
+	}
+
+	void MoveCamera()
+	{
+		if(currIndex % 10 == 0)
+		{
+			cameraMove.MoveToTarget(dominoTransforms[currIndex]);
+		}
 	}
 
 }
