@@ -1,11 +1,13 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/_Scripts/Domino.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/_Scripts/CameraTrigger.cs">
     <Files>
-      <File FileName="Assets/_Scripts/Domino.cs" Line="21" Column="32" />
-      <File FileName="Assets/_Scripts/Control.cs" Line="1" Column="1" />
+      <File FileName="Assets/_Scripts/CameraMove.cs" Line="57" Column="3" />
+      <File FileName="Assets/_Scripts/Domino.cs" Line="1" Column="1" />
+      <File FileName="Assets/_Scripts/Control.cs" Line="92" Column="12" />
+      <File FileName="Assets/_Scripts/GameOverCheck.cs" Line="1" Column="1" />
       <File FileName="Assets/_Scripts/TriggerCheck.cs" Line="1" Column="1" />
-      <File FileName="Assets/_Scripts/MeshControl.cs" Line="1" Column="1" />
+      <File FileName="Assets/_Scripts/CameraTrigger.cs" Line="1" Column="3" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

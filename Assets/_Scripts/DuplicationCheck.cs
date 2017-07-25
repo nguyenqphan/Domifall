@@ -24,7 +24,7 @@ public class DuplicationCheck : MonoBehaviour {
 			}
 		}
 
-		Debug.Log("The length of dominoes " + dominoArray.Length );
+//		Debug.Log("The length of dominoes " + dominoArray.Length );
 	}
 	
 	// Update is called once per frame

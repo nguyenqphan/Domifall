@@ -7,16 +7,16 @@ using System.Linq;
 [RequireComponent(typeof(MeshRenderer))]
 public class MeshControl : MonoBehaviour {
 
-	private const int DOMINO_VERT_UV = 24;
-	private const int DOMINO_TRIANGlE = 36;
+	private const int DOMINO_VERT_UV = 24;								// Number of vertices for a domino
+	private const int DOMINO_TRIANGlE = 36;								// Number of triangle for a domino
 
-	private int meshLength;
-	private int i;
-
-	private Vector3[] vertsArray;
-	private Vector2[] uvsArray;
-	private int[] triangleArray;
-	private Vector3 tempVector3Zero = new Vector3(0f,0f,0f);
+	private int meshLength;												// Length of a mesh
+	private int i;														// Index	
+		
+	private Vector3[] vertsArray;										// Vertices of the mesth
+	private Vector2[] uvsArray;											// UVs of the mesh	
+	private int[] triangleArray;										// Triangles of the mesh
+	private Vector3 tempVector3Zero = new Vector3(0f,0f,0f);			
 
 
 
@@ -24,10 +24,10 @@ public class MeshControl : MonoBehaviour {
 	public MeshFilter[] meshFilters = new MeshFilter[2];
 	private CombineInstance[] combine;
 
-	private int numOfCombineDomi = 0;
-	private int numOfRemovedDomi = 0;
+	private int numOfCombineDomi = 0;									// Number of dominoes combined
+	private int numOfRemovedDomi = 0;									// Number of dominoes removed
 
-	private MeshFilter mainMeshFilter;
+	private MeshFilter mainMeshFilter;									
 	private Matrix4x4 myTrans;
 
 	private bool isLoaded  = false;										
@@ -63,7 +63,7 @@ public class MeshControl : MonoBehaviour {
 		meshFilters[0].mesh.CombineMeshes(combine, true);
 	}
 
-
+	//Remove a domino from a mesh made of out combined donino meshes
 	public void RemoveLastSubmesh()
 	{
 		if(!isLoaded)

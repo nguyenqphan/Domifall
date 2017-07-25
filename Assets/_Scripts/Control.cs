@@ -12,6 +12,9 @@ public class Control : MonoBehaviour {
 	private string layout = "Layout";
 	private string fire1Button = "Fire1";
 
+	public bool isCircleTowerRound = false;
+	private bool isCircleBackCalled = false;
+
 	private int lastDominoIndex = 0;				//Store the last domino index
 
 	private  int fallenAmount = 0;					//Store the number of dominos has fallen and need to combine into a mesh
@@ -41,6 +44,7 @@ public class Control : MonoBehaviour {
 
 	private Knocker knockComponent;				//reference to Knocker script
 	private CameraMove cameraMove;
+//	private CameraTrigger cameraTrigger;
 
 	private List<Transform> activeDominoes;		//Store active dominoes that have rigibody and box collider
 
@@ -57,6 +61,8 @@ public class Control : MonoBehaviour {
 	[HideInInspector]	
 	public Vector3 dir;							//A direction for a knock domino (PosB - PosA)
 
+	private IEnumerator safeCheckCoroutine;
+	private WaitForSeconds waitTime = new WaitForSeconds(2f);
 	//Register events
 	void OnEnable()
 	{
@@ -86,6 +92,8 @@ public class Control : MonoBehaviour {
 		triggerCheck = GameObject.FindWithTag("TriggerCheck").GetComponent<Transform>();
 		knockComponent = GameObject.FindWithTag("KnockDomino").GetComponent<Knocker>();
 		cameraMove = GameObject.FindWithTag("CameraHolder").GetComponent<CameraMove>();
+//		cameraTrigger = GameObject.FindWithTag("CameraTrigger").GetComponent<CameraTrigger>();
+
 
 	}
 
@@ -103,6 +111,8 @@ public class Control : MonoBehaviour {
 		dominoTransforms[1].gameObject.SetActive(false);						//Set the parent of all dominoes inactive
 		activeDominoes = new List<Transform>();									//initilize a list of active dominoes
 		InvokeRepeating(layout, 1f, 0.3f);	
+
+		safeCheckCoroutine = SafeCheck();
 
 	}
 	
@@ -167,11 +177,7 @@ public class Control : MonoBehaviour {
 			//Reached the last domino
 			if(currIndex > dominoTransforms.Length  - 1)
 			{
-				MoveTriggerCheck();
-				Knock ();														
-				CancelInvoke ();
-				knockComponent.StartMoveUp ();
-				knockComponent.StartRotateDomino ();
+				ActivateKnockDomino();
 				lastDominoIndex = currIndex - numOfActiveDomi  -2;
 			
 				return;
@@ -180,6 +186,11 @@ public class Control : MonoBehaviour {
 			dominoTransforms[currIndex].SetParent(null);						//remove the domino from its parent
 			SaveOriginalPostion();												//Save the domino position before moving it
 			isInteraciveDomino = IsActiveCube();								//Call a random function to decide whether a domino is active
+//			if(isInteraciveDomino)
+//			{
+//				cameraTrigger.LookAtDomino(dominoTransforms[currIndex - 2]);
+//			}
+//
 			dominoes[currIndex - 2].StartMoveUp(isInteraciveDomino);			//Move the domino up	
 
 			if(isInteraciveDomino)
@@ -209,14 +220,13 @@ public class Control : MonoBehaviour {
 		{
 			lastDominoIndex = currIndex - numOfActiveDomi - 2;
 
-			//if the domino falls backward, it would knock down the previous which is dominoTransforms[curr - 2]
-			if (dominoTransforms[currIndex - 2].eulerAngles.x < 15 || dominoTransforms[currIndex - 2].eulerAngles.x > 345 ) {
-				MoveTriggerCheck();
-				Knock ();														
-				CancelInvoke ();
-				knockComponent.StartMoveUp ();
-				knockComponent.StartRotateDomino ();
+			//if the domino falls backward, it would knock down the previous which is dominoTransforms[curr - 2].
+			if (dominoTransforms[currIndex - 2].eulerAngles.x < 15 || dominoTransforms[currIndex - 2].eulerAngles.x > 345) {
+				ActivateKnockDomino();
 			}
+
+
+
 		}
 	}
 
@@ -280,6 +290,9 @@ public class Control : MonoBehaviour {
 		isGameOver = true;
 		lastDominoIndex = currIndex - numOfActiveDomi - 2;
 		MoveTriggerCheck();
+
+		//Check the privious condition after a wait time to make sure dominoes were down.
+		StartCoroutine(safeCheckCoroutine);
 	
 	}
 
@@ -329,10 +342,43 @@ public class Control : MonoBehaviour {
 
 	void MoveCamera()
 	{
+		if(isGameOver && isCircleTowerRound && !isCircleBackCalled)
+		{
+			isCircleBackCalled = true;
+			cameraMove.CircleBackToTop(lastDominoIndex/4);
+			Debug.Log("Last DominoIndex " + lastDominoIndex);
+		}
+		else
 		if(currIndex % 10 == 0)
 		{
-			cameraMove.MoveToTarget(dominoTransforms[currIndex]);
+				if(isCircleBackCalled)
+					return;
+				if(isCircleTowerRound && currIndex % 20 == 0)
+					cameraMove.CircleAroundTarget();
+				else
+					if(!isCircleTowerRound)
+						cameraMove.MoveToTarget(dominoTransforms[currIndex]);
 		}
+	}
+
+	//This method is to make sure knockDomino will activate if the game was over and dominoes were not knocked down.
+	IEnumerator SafeCheck()
+	{
+		yield return waitTime;
+		if (dominoTransforms[currIndex - 2].eulerAngles.x < 15 || dominoTransforms[currIndex - 2].eulerAngles.x > 345) {
+			ActivateKnockDomino();
+		}	
+	}
+
+	void ActivateKnockDomino()
+	{
+		isGameOver = true;
+		MoveTriggerCheck();
+		Knock ();														
+		CancelInvoke ();
+		knockComponent.StartMoveUp ();
+		knockComponent.StartRotateDomino ();
+		
 	}
 
 }
