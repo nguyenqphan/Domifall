@@ -354,7 +354,7 @@ public class Control : MonoBehaviour {
 			Debug.Log("Last DominoIndex " + lastDominoIndex);
 		}
 		else
-		if(currIndex % 10 == 0)
+		if(currIndex % 20 == 0)
 		{
 				if(isCircleBackCalled)
 					return;

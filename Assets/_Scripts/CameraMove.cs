@@ -5,6 +5,8 @@ using UnityEngine;
 public class CameraMove : MonoBehaviour {
 
 	public Transform camFinalPos;
+	public Vector3 velocity = Vector3.one;
+	public Vector3 vel = Vector3.one;
 
 	private Transform trans;
 	private float speed = 3f;
@@ -53,15 +55,15 @@ public class CameraMove : MonoBehaviour {
 
 	private IEnumerator MoveTo(Transform targetTrans)
 	{
+		
+
 		tempPos = targetTrans.position;
 		tempRot = targetTrans.rotation;
 
 		while(trans.position != tempPos)
 		{
 			distance = speed * Time.deltaTime;
-			trans.position = Vector3.MoveTowards(trans.position, tempPos, distance);
-//			trans.RotateAround(tempPos, -Vector3.up, 17 *distance);
-//			trans.LookAt(tempPos);
+			trans.position = Vector3.SmoothDamp(trans.position, tempPos, ref vel, 1f);
 			yield return null;	
 		}
 
@@ -105,9 +107,10 @@ public class CameraMove : MonoBehaviour {
 
 	private IEnumerator CamLastPosition()
 	{
+		
 		while(trans.position != camFinalPos.position)
 		{
-			trans.position = Vector3.MoveTowards(trans.position, camFinalPos.position, Time.deltaTime * 5);
+			trans.position = Vector3.SmoothDamp(trans.position, camFinalPos.position, ref velocity, 1f);
 			yield return null;
 		}
 	}
