@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Control : MonoBehaviour {
 
+	private GameManager gameManager;
+
 	private const int holderAmount = 100;			//The number of dominos will combine into a mesh for better performance
 	private const int numOfActiveDomi = 10;			//The number of active dominoes
 	private List<MeshControl> meshControlList;		//Store MeshControl scripts as a List
@@ -92,6 +94,7 @@ public class Control : MonoBehaviour {
 		triggerCheck = GameObject.FindWithTag("TriggerCheck").GetComponent<Transform>();
 		knockComponent = GameObject.FindWithTag("KnockDomino").GetComponent<Knocker>();
 		cameraMove = GameObject.FindWithTag("CameraHolder").GetComponent<CameraMove>();
+		gameManager = GameObject.FindWithTag("GameManager").GetComponent<GameManager>();
 //		cameraTrigger = GameObject.FindWithTag("CameraTrigger").GetComponent<CameraTrigger>();
 
 
@@ -155,7 +158,7 @@ public class Control : MonoBehaviour {
 	private bool IsActiveCube()
 	{
 //		return (currIndex % 2 == 0) && randomTarget == Random.Range(1, 100);
-		return currIndex % 20 == 0;
+		return currIndex % 100 == 0;
 
 
 	}
@@ -177,6 +180,8 @@ public class Control : MonoBehaviour {
 			//Reached the last domino
 			if(currIndex > dominoTransforms.Length  - 1)
 			{
+				gameManager.win = true;
+
 				ActivateKnockDomino();
 				lastDominoIndex = currIndex - numOfActiveDomi  -2;
 			
@@ -365,7 +370,7 @@ public class Control : MonoBehaviour {
 	IEnumerator SafeCheck()
 	{
 		yield return waitTime;
-		if (dominoTransforms[currIndex - 2].eulerAngles.x < 15 || dominoTransforms[currIndex - 2].eulerAngles.x > 345) {
+		if (dominoTransforms[currIndex - 3].eulerAngles.x < 15 || dominoTransforms[currIndex - 3].eulerAngles.x > 345) {
 			ActivateKnockDomino();
 		}	
 	}

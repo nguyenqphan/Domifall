@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CameraMove : MonoBehaviour {
 
-
+	public Transform camFinalPos;
 
 	private Transform trans;
 	private float speed = 3f;
@@ -36,6 +36,8 @@ public class CameraMove : MonoBehaviour {
 	{
 		trans = GetComponent<Transform>();
 	}
+
+
 
 	public void MoveToTarget(Transform targetTrans)
 	{
@@ -101,6 +103,23 @@ public class CameraMove : MonoBehaviour {
 
 	}
 
+	private IEnumerator CamLastPosition()
+	{
+		while(trans.position != camFinalPos.position)
+		{
+			trans.position = Vector3.MoveTowards(trans.position, camFinalPos.position, Time.deltaTime * 5);
+			yield return null;
+		}
+	}
+
+
+
+
+	public void MoveCamToLastPosition()
+	{
+		StartCoroutine(CamLastPosition());
+	}
+
 	public void CircleBackToTop(float dis)
 	{
 		StartCoroutine(CircleBack(dis));
@@ -118,7 +137,4 @@ public class CameraMove : MonoBehaviour {
 		StopAllCoroutines();
 	}
 
-		/// 90x = 2y
-	    /// 90 --- 100%
-	///     2 ----- 100%
 }
