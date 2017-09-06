@@ -395,8 +395,17 @@ public class Control : MonoBehaviour {
 				if(isCircleTowerRound && currIndex % 20 == 0)
 					cameraMove.CircleAroundTarget();
 				else
-					if(!isCircleTowerRound)
-						cameraMove.MoveToTarget(dominoTransforms[currIndex]);
+					if(!isCircleTowerRound){
+						if(!isGameOver){
+							cameraMove.MoveToTarget(dominoTransforms[currIndex]);
+						}else{
+							if(!dominoTransforms[currIndex].gameObject.CompareTag("NoCamPos")){
+								Debug.Log(dominoTransforms[currIndex].name);
+								cameraMove.MoveToTarget(dominoTransforms[currIndex]);
+							}
+						}
+
+					}
 		}
 	}
 

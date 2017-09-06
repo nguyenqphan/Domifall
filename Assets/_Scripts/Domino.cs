@@ -102,7 +102,7 @@ public class Domino : MonoBehaviour {
 		while(true)
 		{
 //			Debug.Log(domiTrans.localRotation.eulerAngles.x);
-			domiTrans.Rotate(Vector3.right, Space.Self);		//Rotate the domino around x axis
+//			domiTrans.Rotate(Vector3.right, Space.Self);		//Rotate the domino around x axis
 
 			if(Input.GetButtonDown(fireButton))					//if Fire1 is pressed
 			{
