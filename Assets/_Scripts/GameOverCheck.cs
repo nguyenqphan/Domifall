@@ -15,8 +15,8 @@ public class GameOverCheck : MonoBehaviour {
 			if(CallGameOver != null)
 			{
 				CallGameOver();
-				Debug.Log("GameOver");
-				Destroy(this.gameObject);
+//				Debug.Log("GameOver");
+//				Destroy(this.gameObject);
 			}
 		}
 

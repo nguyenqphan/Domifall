@@ -4,7 +4,12 @@ using UnityEngine;
 
 public class Control : MonoBehaviour {
 
+	//Varible declarations
+	#region
+
+	public Color32[] gameColors = new Color32[4];
 	private GameManager gameManager;
+	private ColorManager colorManager;
 
 	private const int holderAmount = 100;			//The number of dominos will combine into a mesh for better performance
 	private const int numOfActiveDomi = 10;			//The number of active dominoes
@@ -46,18 +51,14 @@ public class Control : MonoBehaviour {
 
 	private Knocker knockComponent;				//reference to Knocker script
 	private CameraMove cameraMove;
-//	private CameraTrigger cameraTrigger;
 
 	private List<Transform> activeDominoes;		//Store active dominoes that have rigibody and box collider
-
-
 
 	private int currIndex = 2;					//the current index of an active domino. Starting with 2 because the first two game objects are parents of dominoes
 	private int randomTarget = 1;				//a target for a random number to hit
 	private bool isInteraciveDomino = false;	//Is the current domino interactive?
 	private float preAngleX;					//Cache the rotation of x of previous dominos
 
-		
 	private Vector3 PosA;						//Cache the position of a domino before moving it
 	private Vector3 PosB;						//Cache the position of a domino before moving it
 	[HideInInspector]	
@@ -65,6 +66,8 @@ public class Control : MonoBehaviour {
 
 	private IEnumerator safeCheckCoroutine;
 	private WaitForSeconds waitTime = new WaitForSeconds(2f);
+
+	#endregion 
 	//Register events
 	void OnEnable()
 	{
@@ -95,6 +98,7 @@ public class Control : MonoBehaviour {
 		knockComponent = GameObject.FindWithTag("KnockDomino").GetComponent<Knocker>();
 		cameraMove = GameObject.FindWithTag("CameraHolder").GetComponent<CameraMove>();
 		gameManager = GameObject.FindWithTag("GameManager").GetComponent<GameManager>();
+		colorManager = GameObject.FindWithTag("ColorManager").GetComponent<ColorManager>();
 //		cameraTrigger = GameObject.FindWithTag("CameraTrigger").GetComponent<CameraTrigger>();
 
 
@@ -132,6 +136,33 @@ public class Control : MonoBehaviour {
 		}
 	}
 
+	private Color32 Lerp4(Color32 a, Color32 b, Color32 c, Color32 d, float t)
+	{
+		if(t < 0.33f)
+		{
+			return Color.Lerp(a,b,t/0.33f);
+		}else if(t < 0.66f)
+		{
+			return Color.Lerp(b, c, (t -0.33f)/ 0.33f);
+		}else{
+			return Color.Lerp(c, d, (t-0.66f) /0.66f);
+		}
+	}
+
+	private void ColorMesh(Mesh mesh)
+	{
+		Vector3[] vertices = mesh.vertices;
+		Color32[] colors = new Color32[vertices.Length];
+		float f = Mathf.Sin(currIndex * 0.25f);
+
+		for(int i =0; i < vertices.Length; i++)
+		{
+			colors[i] = Lerp4(gameColors[0], gameColors[1], gameColors[2], gameColors[3], f);
+		}
+
+		mesh.colors32 = colors;
+	}
+
 	//call this method to keep placing a domino at a certain interval time
 	void InvokeRepeatingDomino()
 	{
@@ -141,6 +172,7 @@ public class Control : MonoBehaviour {
 	void Layout()
 	{
 		dominoTransforms[currIndex].SetParent(null);							//remove the domino from its parent
+		colorManager.ColorMesh(dominoTransforms[currIndex].GetComponent<MeshFilter>().mesh, currIndex);
 		dominoes[currIndex - 2].StartMoveUp(isInteraciveDomino);				//Move it up (CurrIndex - 2 becuase the first to gameobjects dont have Domino component))
 		activeDominoes.Add(dominoTransforms[currIndex]);
 //		AddActiveDomino(dominoTransforms[currIndex]);							//Add the domino to active domino list
@@ -158,9 +190,7 @@ public class Control : MonoBehaviour {
 	private bool IsActiveCube()
 	{
 //		return (currIndex % 2 == 0) && randomTarget == Random.Range(1, 100);
-		return currIndex % 100 == 0;
-
-
+		return currIndex % 21 == 0;
 	}
 
 	//a method to place a domino
@@ -189,13 +219,12 @@ public class Control : MonoBehaviour {
 			}
 
 			dominoTransforms[currIndex].SetParent(null);						//remove the domino from its parent
+//			ColorMesh(dominoTransforms[currIndex].GetComponent<MeshFilter>().mesh);
+			colorManager.ColorMesh(dominoTransforms[currIndex].GetComponent<MeshFilter>().mesh, currIndex);
+
 			SaveOriginalPostion();												//Save the domino position before moving it
 			isInteraciveDomino = IsActiveCube();								//Call a random function to decide whether a domino is active
-//			if(isInteraciveDomino)
-//			{
-//				cameraTrigger.LookAtDomino(dominoTransforms[currIndex - 2]);
-//			}
-//
+
 			dominoes[currIndex - 2].StartMoveUp(isInteraciveDomino);			//Move the domino up	
 
 			if(isInteraciveDomino)
@@ -347,11 +376,16 @@ public class Control : MonoBehaviour {
 
 	void MoveCamera()
 	{
+		if(dominoTransforms[currIndex - 1].gameObject.CompareTag("CamPos") && !isGameOver)
+		{
+			cameraMove.MoveToTarget(dominoTransforms[currIndex]);
+			return;
+		}
+
 		if(isGameOver && isCircleTowerRound && !isCircleBackCalled)
 		{
 			isCircleBackCalled = true;
 			cameraMove.CircleBackToTop(lastDominoIndex/4);
-			Debug.Log("Last DominoIndex " + lastDominoIndex);
 		}
 		else
 		if(currIndex % 20 == 0)

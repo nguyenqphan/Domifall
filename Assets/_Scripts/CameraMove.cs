@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CameraMove : MonoBehaviour {
 
+	private UIManager uiManager;
+
 	public Transform camFinalPos;
 	public Vector3 velocity = Vector3.one;
 	public Vector3 vel = Vector3.one;
@@ -37,6 +39,7 @@ public class CameraMove : MonoBehaviour {
 	void Awake()
 	{
 		trans = GetComponent<Transform>();
+		uiManager = GameObject.FindWithTag("UIManager").GetComponent<UIManager>();
 	}
 
 
@@ -59,14 +62,18 @@ public class CameraMove : MonoBehaviour {
 
 		tempPos = targetTrans.position;
 		tempRot = targetTrans.rotation;
-
 		while(trans.position != tempPos)
 		{
 			distance = speed * Time.deltaTime;
 			trans.position = Vector3.SmoothDamp(trans.position, tempPos, ref vel, 1f);
+
+			//condition to exit the loop - stop the camere
+			if(vel.sqrMagnitude <  0.01f)
+			{
+				break;
+			}
 			yield return null;	
 		}
-
 	
 	}
 
@@ -107,12 +114,16 @@ public class CameraMove : MonoBehaviour {
 
 	private IEnumerator CamLastPosition()
 	{
-		
-		while(trans.position != camFinalPos.position)
+		tempPos = camFinalPos.position;
+
+		//add the offset 0.1 to the camera y position to stop the camera
+		while(trans.position.y  + 0.1 < tempPos.y)
 		{
-			trans.position = Vector3.SmoothDamp(trans.position, camFinalPos.position, ref velocity, 1f);
+			trans.position = Vector3.SmoothDamp(trans.position, tempPos, ref velocity, 1f);
+
 			yield return null;
 		}
+		uiManager.ShowUI();
 	}
 
 
