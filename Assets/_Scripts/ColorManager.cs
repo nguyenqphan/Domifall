@@ -57,7 +57,7 @@ public class ColorManager : MonoBehaviour {
 			lerpValue -= 0.025f;
 		}
 
-		tempColor = Color32.Lerp(colorArray[12], colorArray[2], lerpValue);
+		tempColor = Color32.Lerp(colorArray[3], colorArray[5], lerpValue);
 
 		for(i = 0; i < vertices.Length; i++)
 		{
