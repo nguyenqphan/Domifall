@@ -17,6 +17,8 @@ public class Knocker : MonoBehaviour {
 	private Vector3 tempPos;
 	private bool isMoveUpCalled = false;
 
+
+	private Vector3 direction;
 	void Awake()
 	{
 		trans = GetComponent<Transform>();	
@@ -39,12 +41,7 @@ public class Knocker : MonoBehaviour {
 	//A coroutine to move a domino up
 	private IEnumerator MoveUp()
 	{
-//		if(!isMoveUpCalled){
-//			isMoveUpCalled = true;
-//			StopCoroutine("MoveUp");
-//			yield return null;
-//		}
-			
+
 	   	 tempPos = trans.position;
 		 localX = trans.localPosition.x;
 		 localY = trans.localPosition.y;
@@ -91,7 +88,8 @@ public class Knocker : MonoBehaviour {
 		gameObject.AddComponent<Rigidbody>();					//Add a Rigibody to the game object	
 		rb = GetComponent<Rigidbody>();							
 		rb.useGravity = false;									//dont use gravity
-		rb.velocity = -control.dir * 10f;						//Move the game object in a given direction	
+		direction = trans.position - control.dominoTransforms[2].position;   //
+		rb.velocity = -direction * 10f;						//Move the game object in a given direction	
 	}
 
 	void OnCollisionEnter(Collision collision)

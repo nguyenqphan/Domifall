@@ -83,6 +83,25 @@ public class MeshControl : MonoBehaviour {
 
 	}
 
+	public void RemoveFirstSubmesh()
+	{
+		if(!isLoaded)
+		{
+			isLoaded = true;
+			LoadLastMesh();
+		}
+
+		numOfRemovedDomi++;
+
+		for(i = DOMINO_VERT_UV * (numOfRemovedDomi - 1); i < DOMINO_VERT_UV * numOfRemovedDomi; i++)
+		{
+			vertsArray[i] = tempVector3Zero;
+		}
+
+		meshFilters[0].mesh.vertices = vertsArray;
+
+	}
+
 	public void LoadLastMesh()
 	{
 	    meshLength = meshFilters[0].mesh.vertices.Length;	

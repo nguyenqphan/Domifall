@@ -2,7 +2,7 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/_Scripts/GradientBackground.cs">
     <Files>
-      <File FileName="Assets/_Scripts/GradientBackground.cs" Line="9" Column="13" />
+      <File FileName="Assets/_Scripts/GradientBackground.cs" Line="1" Column="1" />
       <File FileName="Assets/_ShaderPractice/ShaderTest2.shader" Line="1" Column="1" />
       <File FileName="Assets/_Scripts/UIManager.cs" Line="1" Column="1" />
       <File FileName="Assets/_ShaderPractice/ShaderGradSky.shader" Line="1" Column="1" />
