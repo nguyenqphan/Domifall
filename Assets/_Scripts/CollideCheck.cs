@@ -11,6 +11,7 @@ public class CollideCheck : MonoBehaviour {
 	{
 		if(collider.gameObject.CompareTag("ActiveDomino"))
 		{
+//			Debug.Log("ColliderCheck Detected");
 			if(Colliding != null)
 			{
 //				collider.gameObject.transform.localRotation.x 

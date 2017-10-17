@@ -23,6 +23,7 @@ public class ColorManager : MonoBehaviour {
 
 	public void  DefineColor()
 	{
+		//NOTE: alpha does not work for current domino shader.
 		colorArray[0] = new Color(255f, 153f , 0f  , 255f) / 255f; //Orange 
 		colorArray[1] = Color.white;
 		colorArray[2] = Color.red;
@@ -57,14 +58,39 @@ public class ColorManager : MonoBehaviour {
 			lerpValue -= 0.025f;
 		}
 
-		tempColor = Color32.Lerp(colorArray[3], colorArray[5], lerpValue);
+		tempColor = Color32.Lerp(colorArray[8], colorArray[11], lerpValue);
 
 		for(i = 0; i < vertices.Length; i++)
 		{
-				colors[i] = tempColor;
+			colors[i] = tempColor;
 		}
 
 		mesh.colors32 = colors;
+	}
+
+	public void MakeDominoDisapear(Mesh mesh)
+	{
+		StartCoroutine(DominoDisapear(mesh));
+	}
+
+	IEnumerator DominoDisapear(Mesh mesh)
+	{
+		byte alphaColor = 255;
+		byte TransparentSpeed = 1;
+		while(alphaColor > 1)
+		{
+			
+			alphaColor = (byte)(alphaColor - TransparentSpeed) ;
+			for(i = 0; i < vertices.Length; i++)
+			{
+				colors[i].a = 0;
+				Debug.Log(colors[i].a);
+			}
+		
+			mesh.colors32 = colors;
+			yield return null;
+		}
+
 	}
 
 

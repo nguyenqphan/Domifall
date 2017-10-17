@@ -6,13 +6,15 @@ public class Control : MonoBehaviour {
 
 	//Varible declarations
 	#region
+	[HideInInspector]
+	public Transform originalTrans;					//Store the original position and rotation of active domino before moving it up
 
-	public Color32[] gameColors = new Color32[4];
+	private int numOfDominoes;
 	private GameManager gameManager;
 	private ColorManager colorManager;
 
-	private const int holderAmount = 100;			//The number of dominos will combine into a mesh for better performance
-	private const int numOfActiveDomi = 10;			//The number of active dominoes
+	private const int HOLDERAMOUNT = 100;			//The number of dominos will combine into a mesh for better performance
+	private const int NUMOFACTIVEDOMINO = 10;			//The number of active dominoes
 	private List<MeshControl> meshControlList;		//Store MeshControl scripts as a List
 
 	private string placeDomino = "PlaceDomino";
@@ -44,7 +46,7 @@ public class Control : MonoBehaviour {
 
 	private Transform gameoverCheck;			//OnTrigger Enter, game is over.
 	private Transform triggerCheck;				//on trigger enter, remove a domino from a  combined mesh and combine another fallen domino to another mesh. 
-	private Transform collideCheck;				//if collision detected, then continue to place dominos
+	public Transform collideCheck;				//if collision detected, then continue to place dominos
 	private Transform knockDomino;				//Store the Transform of a game object that is used to initially knock down a domino	
 
 	[HideInInspector]
@@ -53,8 +55,6 @@ public class Control : MonoBehaviour {
 
 	private Knocker knockComponent;				//reference to Knocker script
 	private CameraMove cameraMove;
-
-	private List<Transform> activeDominoes;		//Store active dominoes that have rigibody and box collider
 
 	private int dominoIndex = 2;
 
@@ -67,6 +67,10 @@ public class Control : MonoBehaviour {
 	private Vector3 PosB;						//Cache the position of a domino before moving it
 	[HideInInspector]	
 	public Vector3 dir;							//A direction for a knock domino (PosB - PosA)
+
+	private Vector3 previousDominoPos;
+	private Quaternion previousDominoRotation;
+	private Transform previousDominoTrans;
 
 	private IEnumerator safeCheckCoroutine;
 	private WaitForSeconds waitTime = new WaitForSeconds(2f);
@@ -95,6 +99,7 @@ public class Control : MonoBehaviour {
 
 	void Awake()
 	{
+		originalTrans = GameObject.FindWithTag("OriginalTrans").GetComponent<Transform>();
 		collideCheck = GameObject.FindWithTag("CollideCheck").GetComponent<Transform>();		
 		knockDomino = GameObject.FindWithTag("KnockDomino").GetComponent<Transform>();
 		gameoverCheck = GameObject.FindWithTag("GameOverCheck").GetComponent<Transform>();
@@ -120,7 +125,7 @@ public class Control : MonoBehaviour {
 		dominoTransforms = GetComponentsInChildren<Transform>();				//get all Transform components of the dominoes
 		dominoes = GetComponentsInChildren<Domino>();							//get all Domino components of the dominoes
 		dominoTransforms[1].gameObject.SetActive(false);						//Set the parent of all dominoes inactive
-		activeDominoes = new List<Transform>();									//initilize a list of active dominoes
+
 		InvokeRepeating(layout, 1f, 0.3f);	
 
 	}
@@ -137,34 +142,7 @@ public class Control : MonoBehaviour {
 			}
 		}
 	}
-
-	private Color32 Lerp4(Color32 a, Color32 b, Color32 c, Color32 d, float t)
-	{
-		if(t < 0.33f)
-		{
-			return Color.Lerp(a,b,t/0.33f);
-		}else if(t < 0.66f)
-		{
-			return Color.Lerp(b, c, (t -0.33f)/ 0.33f);
-		}else{
-			return Color.Lerp(c, d, (t-0.66f) /0.66f);
-		}
-	}
-
-	private void ColorMesh(Mesh mesh)
-	{
-		Vector3[] vertices = mesh.vertices;
-		Color32[] colors = new Color32[vertices.Length];
-		float f = Mathf.Sin(currIndex * 0.25f);
-
-		for(int i =0; i < vertices.Length; i++)
-		{
-			colors[i] = Lerp4(gameColors[0], gameColors[1], gameColors[2], gameColors[3], f);
-		}
-
-		mesh.colors32 = colors;
-	}
-
+		
 	//call this method to keep placing a domino at a certain interval time
 	void InvokeRepeatingDomino()
 	{
@@ -179,12 +157,10 @@ public class Control : MonoBehaviour {
 		dominoes[currIndex - 2].transform.position = new Vector3(dominoes[currIndex - 2].transform.position.x, dominoes[currIndex - 2].transform.position.y + -1f, dominoes[currIndex - 2].transform.position.z );
 
 		dominoes[currIndex - 2].StartMoveUp(isInteraciveDomino);				//Move it up (CurrIndex - 2 becuase the first to gameobjects dont have Domino component))
-		activeDominoes.Add(dominoTransforms[currIndex]);
-//		AddActiveDomino(dominoTransforms[currIndex]);							//Add the domino to active domino list
 
 		currIndex++;
 
-		if(currIndex  - 1 > numOfActiveDomi)									//Subtract 1 becuase becuase currIndex startd with 2 so the number of active dominos can be flexibly change for testing.
+		if(currIndex  - 1 > NUMOFACTIVEDOMINO)									//Subtract 1 becuase becuase currIndex startd with 2 so the number of active dominos can be flexibly change for testing.
 		{
 			PosB = dominoTransforms[currIndex - 1].position;
 			CancelInvoke(layout);														//Stop placing dominos after it meets a certain condition
@@ -195,7 +171,7 @@ public class Control : MonoBehaviour {
 	private bool IsActiveCube()
 	{
 //		return (currIndex % 2 == 0) && randomTarget == Random.Range(1, 100);
-		return currIndex % 400 == 0;
+		return currIndex % 100 == 0;
 	}
 
 	//a method to place a domino
@@ -205,48 +181,81 @@ public class Control : MonoBehaviour {
 
 		MoveCamera();
 	
-			//Reached the last domino
-			if(currIndex > dominoTransforms.Length  - 1)
-			{
-				gameManager.win = true;
-				StartCoroutine(CombineAndDecombine());
-				ActivateKnockDomino();
-				lastDominoIndex = currIndex - numOfActiveDomi  -2;
+		preAngleX = dominoTransforms[currIndex - 1].eulerAngles.x;
+//		Debug.Log(dominoTransforms[currIndex - 1].name + "NAME");
 			
+		//A condition to figure out whether or not a domino is falled
+		if (preAngleX < 15 || preAngleX > 345) {
+			//Reached the last domino
+			if (currIndex > dominoTransforms.Length - 1) {
+				Debug.Log("Win, Reach the end of the domino length");
+				gameManager.win = true;
+				StartCoroutine (CombineAndDecombine ());
+				ActivateKnockDomino ();
+				lastDominoIndex = currIndex - NUMOFACTIVEDOMINO - 2;
+				numOfDominoes = currIndex - 2;
+				
 				return;
 			}
 
-			dominoTransforms[currIndex].SetParent(null);						//remove the domino from its parent
-//			ColorMesh(dominoTransforms[currIndex].GetComponent<MeshFilter>().mesh);
-			colorManager.ColorMesh(dominoTransforms[currIndex].GetComponent<MeshFilter>().mesh, currIndex);
+			previousDominoPos = dominoTransforms[currIndex - 2].position;			//Save position of the original domino before starting to move it up
+			previousDominoRotation = dominoTransforms[currIndex - 2].rotation;		//save rotaion of the original domino before starting to move it up and rotate it.
 
-			isInteraciveDomino = IsActiveCube();								//Call a random function to decide whether a domino is active
-			dominoes[currIndex - 2].transform.position = new Vector3(dominoes[currIndex - 2].transform.position.x, dominoes[currIndex - 2].transform.position.y + -1f, dominoes[currIndex - 2].transform.position.z );
-			dominoes[currIndex - 2].StartMoveUp(isInteraciveDomino);			//Move the domino up	
 
-			if(isInteraciveDomino)
-			{
-				collideCheck.position = dominoTransforms[currIndex].position;	
-				collideCheck.rotation = dominoTransforms[currIndex].rotation;
+//			Debug.Log(previousDominoTrans.position);
+//			Debug.Log(previousDominoTrans.rotation);
+//
+			dominoTransforms [currIndex].SetParent (null);						//remove the domino from its parent
 
-				CancelInvoke();													//Stop Placing domino
-			}
+			//ColorMesh(dominoTransforms[currIndex].GetComponent<MeshFilter>().mesh);
+			colorManager.ColorMesh (dominoTransforms [currIndex].GetComponent<MeshFilter> ().mesh, currIndex);
 				
-//			meshControlList[holderIndex].meshFilters[1] = dominoTransforms[currIndex - numOfActiveDomi].GetComponent<MeshFilter>(); //OLD
+			isInteraciveDomino = IsActiveCube ();								//Call a random function to decide whether a domino is active
 
-			
-		meshControlList[holderIndex].meshFilters[1] = dominoTransforms[ currIndex - numOfActiveDomi].GetComponent<MeshFilter>();	//get the previous domino meshFilter to combine
+//			previousDominoTrans = dominoes [currIndex - 2].transform;
 
-			meshControlList[holderIndex].Combine();													
-		dominoTransforms[ currIndex - numOfActiveDomi].gameObject.SetActive(false);
-
-			currIndex++;
-
-			//Creat a new domino holder after every 50 dominos
-			if((currIndex - numOfActiveDomi - 2)  % holderAmount == 0 )
-			{
-				CreateNewHolder();
+			dominoes [currIndex - 2].transform.position = new Vector3 (dominoes [currIndex - 2].transform.position.x, dominoes [currIndex - 2].transform.position.y + -1f, dominoes [currIndex - 2].transform.position.z);
+			dominoes [currIndex - 2].StartMoveUp (isInteraciveDomino);			//Move the domino up	
+				
+			if (isInteraciveDomino) {
+				dominoTransforms[currIndex - 1].GetComponent<Rigidbody>().isKinematic = true;
+				collideCheck.position = dominoTransforms [currIndex].position;	
+				collideCheck.rotation = dominoTransforms [currIndex].rotation;
+//				Debug.Log("Inside the condition isInteractiveDomino");
+				originalTrans.position = dominoTransforms[currIndex].position;
+				originalTrans.rotation = dominoTransforms[currIndex].rotation;
+//				origianlTrans = dominoTransforms[currIndex];
+				
+				CancelInvoke ();													//Stop Placing domino
 			}
+					
+			//			meshControlList[holderIndex].meshFilters[1] = dominoTransforms[currIndex - numOfActiveDomi].GetComponent<MeshFilter>(); //OLD
+				
+				
+			meshControlList [holderIndex].meshFilters [1] = dominoTransforms [currIndex - NUMOFACTIVEDOMINO].GetComponent<MeshFilter> ();	//get the previous domino meshFilter to combine
+				
+			meshControlList [holderIndex].Combine ();													
+			dominoTransforms [currIndex - NUMOFACTIVEDOMINO].gameObject.SetActive (false);
+				
+			currIndex++;
+				
+			//Creat a new domino holder after every HOLDERAMOUNT dominos
+			if ((currIndex - NUMOFACTIVEDOMINO - 2) % HOLDERAMOUNT == 0) {
+				CreateNewHolder ();
+			}
+		}else{
+			CancelInvoke ();
+//			currIndex--;													//Go back to previous domino Index\
+//			Destroy(dominoTransforms[currIndex].GetComponent<BoxCollider>());
+//			Destroy(dominoTransforms[currIndex].GetComponent<Rigidbody>());
+//			Debug.Log(previousDominoTrans.position + " Control Script");
+//			Debug.Log(previousDominoTrans.rotation + " ControlScript");
+			dominoes[currIndex - 3].StartMoveDown(originalTrans);					//currIndex - 3, not - 2 becuase of failing to place domino
+//			Debug.Log("Inside the else the previous domino is fell");
+//			dominoTransforms[currIndex].position = previousDominoPos;
+//			dominoTransforms[currIndex].rotation = previousDominoRotation;
+
+		}
 		
 	
 	}
@@ -256,12 +265,13 @@ public class Control : MonoBehaviour {
 	private	IEnumerator CombineAndDecombine()
 	{
 		yield return new WaitForSeconds(2f);
-		while(currIndex > currIndex - numOfActiveDomi + remainingDominos){
+		while(currIndex > currIndex - NUMOFACTIVEDOMINO + remainingDominos){
 			
-			meshControlList[holderIndex].meshFilters[1] = dominoTransforms[ currIndex - numOfActiveDomi + remainingDominos].GetComponent<MeshFilter>();	//get the previous domino meshFilter to combine
+			meshControlList[holderIndex].meshFilters[1] = dominoTransforms[ currIndex - NUMOFACTIVEDOMINO + remainingDominos].GetComponent<MeshFilter>();	//get the previous domino meshFilter to combine
 
 			meshControlList[holderIndex].Combine();													
-			dominoTransforms[currIndex - numOfActiveDomi + remainingDominos].gameObject.SetActive(false);
+			dominoTransforms[currIndex - NUMOFACTIVEDOMINO + remainingDominos].gameObject.SetActive(false);
+		
 			Decombine();
 
 			remainingDominos++;
@@ -269,15 +279,6 @@ public class Control : MonoBehaviour {
 		}
 
 	}
-
-	//Add a transform component to active domino list
-	void AddActiveDomino(Transform trans)
-	{
-		trans.gameObject.AddComponent<BoxCollider>();
-		trans.gameObject.AddComponent<Rigidbody>();
-		activeDominoes.Add(trans);
-	}
-
 
 	void CreateNewHolder()
 	{
@@ -311,8 +312,9 @@ public class Control : MonoBehaviour {
 	void SetGameOver()
 	{
 		isGameOver = true;
-		lastDominoIndex = currIndex - numOfActiveDomi - 2;
+		lastDominoIndex = currIndex - NUMOFACTIVEDOMINO - 2;
 		MoveTriggerCheck();
+//		colorManager.MakeDominoDisapear(dominoTransforms[currIndex].GetComponent<MeshFilter>().mesh);
 	
 	}
 
@@ -346,7 +348,7 @@ public class Control : MonoBehaviour {
 
 
 
-		if(fallenAmount % holderAmount == 0)
+		if(fallenAmount % HOLDERAMOUNT == 0)
 		{
 			CreateNewFallenHolder();
 		}
@@ -359,6 +361,8 @@ public class Control : MonoBehaviour {
 		if (tempHoderIndex <= holderIndex) {
 
 			dominoTransforms[headDominoIndex].gameObject.SetActive(true);
+			dominoTransforms[headDominoIndex].GetComponent<Rigidbody>().isKinematic = false;
+
 
 			meshControlList [tempHoderIndex].RemoveFirstSubmesh ();
 			headDominoIndex++;
@@ -366,6 +370,11 @@ public class Control : MonoBehaviour {
 				tempHoderIndex++;
 
 			}
+
+			if(headDominoIndex == numOfDominoes + 2){
+				cameraMove.MoveCamToLastPosition();
+			}
+				
 		}
 
 	}
@@ -396,7 +405,7 @@ public class Control : MonoBehaviour {
 							cameraMove.MoveToTarget(dominoTransforms[currIndex]);
 						}else{
 							if(!dominoTransforms[currIndex].gameObject.CompareTag("NoCamPos")){
-								Debug.Log(dominoTransforms[currIndex].name);
+//								Debug.Log(dominoTransforms[currIndex].name);
 								cameraMove.MoveToTarget(dominoTransforms[currIndex]);
 							}
 						}
