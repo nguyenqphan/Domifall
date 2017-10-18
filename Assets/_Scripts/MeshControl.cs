@@ -61,6 +61,8 @@ public class MeshControl : MonoBehaviour {
 		meshFilters[0].mesh = new Mesh();
 //		meshFilters[0].mesh.Clear();
 		meshFilters[0].mesh.CombineMeshes(combine, true);
+
+
 	}
 
 	//Remove a domino from a mesh made of out combined donino meshes

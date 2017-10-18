@@ -57,6 +57,7 @@
      <Compile Include="Assets\_Scripts\ColorManager.cs" />
      <Compile Include="Assets\_Scripts\ColorSet.cs" />
      <Compile Include="Assets\_Scripts\Control.cs" />
+     <Compile Include="Assets\_Scripts\DebugCamPosition.cs" />
      <Compile Include="Assets\_Scripts\Domino.cs" />
      <Compile Include="Assets\_Scripts\DontDestroy.cs" />
      <Compile Include="Assets\_Scripts\DuplicationCheck.cs" />
@@ -72,6 +73,7 @@
      <Compile Include="Assets\_Scripts\Test.cs" />
      <Compile Include="Assets\_Scripts\TriggerCheck.cs" />
      <Compile Include="Assets\_Scripts\UIManager.cs" />
+     <Compile Include="Assets\CamPosition.cs" />
      <Compile Include="Assets\MarvelousTechniques\Scenes\Tests\DistanceFogStatic\DistanceFogStatic.cs" />
      <Compile Include="Assets\MarvelousTechniques\Scripts\CameraOverlay.cs" />
      <Compile Include="Assets\MarvelousTechniques\Scripts\CubeMover.cs" />

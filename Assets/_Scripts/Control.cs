@@ -8,6 +8,7 @@ public class Control : MonoBehaviour {
 	#region
 	[HideInInspector]
 	public Transform originalTrans;					//Store the original position and rotation of active domino before moving it up
+	private CamPosition camPosition;
 
 	private int numOfDominoes;
 	private GameManager gameManager;
@@ -108,6 +109,7 @@ public class Control : MonoBehaviour {
 		cameraMove = GameObject.FindWithTag("CameraHolder").GetComponent<CameraMove>();
 		gameManager = GameObject.FindWithTag("GameManager").GetComponent<GameManager>();
 		colorManager = GameObject.FindWithTag("ColorManager").GetComponent<ColorManager>();
+		camPosition = GameObject.FindWithTag("CamPositions").GetComponent<CamPosition>();
 //		cameraTrigger = GameObject.FindWithTag("CameraTrigger").GetComponent<CameraTrigger>();
 
 
@@ -171,7 +173,7 @@ public class Control : MonoBehaviour {
 	private bool IsActiveCube()
 	{
 //		return (currIndex % 2 == 0) && randomTarget == Random.Range(1, 100);
-		return currIndex % 100 == 0;
+		return currIndex % 300 == 0;
 	}
 
 	//a method to place a domino
@@ -335,7 +337,7 @@ public class Control : MonoBehaviour {
 		dominoTransforms[dominoIndex].gameObject.SetActive(false);
 
 		Decombine();
-		MoveCamera();
+//		MoveCamera();
 
 		if(dominoIndex > lastDominoIndex)
 		{
@@ -358,9 +360,11 @@ public class Control : MonoBehaviour {
 	private int tempHoderIndex = 0;
 	void Decombine()
 	{
+
 		if (tempHoderIndex <= holderIndex) {
 
 			dominoTransforms[headDominoIndex].gameObject.SetActive(true);
+			MoveCamera();
 			dominoTransforms[headDominoIndex].GetComponent<Rigidbody>().isKinematic = false;
 
 
@@ -379,38 +383,59 @@ public class Control : MonoBehaviour {
 
 	}
 
-	void MoveCamera()
-	{
-		if(dominoTransforms[currIndex - 1].gameObject.CompareTag("CamPos") && !isGameOver)
-		{
-			cameraMove.MoveToTarget(dominoTransforms[currIndex]);
-			return;
-		}
+//	void MoveCamera()
+//	{
+//		if(dominoTransforms[currIndex - 1].gameObject.CompareTag("CamPos") && !isGameOver)
+//		{
+//			cameraMove.MoveToTarget(dominoTransforms[currIndex]);
+//			return;
+//		}
+//
+//		if(isGameOver && isCircleTowerRound && !isCircleBackCalled)
+//		{
+//			isCircleBackCalled = true;
+//			cameraMove.CircleBackToTop(lastDominoIndex/4);
+//		}
+//		else
+//		if(currIndex % 20 == 0)
+//		{
+//				if(isCircleBackCalled)
+//					return;
+//				if(isCircleTowerRound && currIndex % 20 == 0)
+//					cameraMove.CircleAroundTarget();
+//				else
+//					if(!isCircleTowerRound){
+//						if(!isGameOver){
+//							cameraMove.MoveToTarget(dominoTransforms[currIndex]);
+//						}else{
+//							if(!dominoTransforms[currIndex].gameObject.CompareTag("NoCamPos")){
+////								Debug.Log(dominoTransforms[currIndex].name);
+//								cameraMove.MoveToTarget(dominoTransforms[currIndex]);
+//							}
+//						}
+//
+//					}
+//		}
+//	}
 
-		if(isGameOver && isCircleTowerRound && !isCircleBackCalled)
-		{
-			isCircleBackCalled = true;
-			cameraMove.CircleBackToTop(lastDominoIndex/4);
-		}
-		else
-		if(currIndex % 20 == 0)
-		{
-				if(isCircleBackCalled)
-					return;
-				if(isCircleTowerRound && currIndex % 20 == 0)
-					cameraMove.CircleAroundTarget();
-				else
-					if(!isCircleTowerRound){
-						if(!isGameOver){
-							cameraMove.MoveToTarget(dominoTransforms[currIndex]);
-						}else{
-							if(!dominoTransforms[currIndex].gameObject.CompareTag("NoCamPos")){
-//								Debug.Log(dominoTransforms[currIndex].name);
-								cameraMove.MoveToTarget(dominoTransforms[currIndex]);
-							}
-						}
-
-					}
+	private int camPosIndex = 0;
+	void MoveCamera(){
+		
+		if (!gameManager.win) {
+			if (dominoTransforms [currIndex - 1].gameObject.CompareTag ("CamPos")) {
+				
+				camPosIndex++;
+//				Debug.Log (camPosIndex + " CamPosIndex");
+				cameraMove.MoveToTarget (camPosition.transArray [camPosIndex]);
+			}
+		}else{
+			if(dominoTransforms[headDominoIndex - 1].gameObject.CompareTag("CamPositionWin"))
+			{
+				Debug.Log("Move Camera here................................");
+				camPosIndex++;
+//				Debug.Log (camPosIndex + " CamPosIndex");
+				cameraMove.MoveToTarget (camPosition.transArray [camPosIndex]);
+			}
 		}
 	}
 
