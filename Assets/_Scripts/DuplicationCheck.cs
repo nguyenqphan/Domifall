@@ -11,6 +11,7 @@ public class DuplicationCheck : MonoBehaviour {
 	{
 
 		dominoArray = GetComponentsInChildren<Transform>();
+		Debug.Log("The length of dominoes " + dominoArray.Length );
 	}
 
 
@@ -24,7 +25,7 @@ public class DuplicationCheck : MonoBehaviour {
 			}
 		}
 
-//		Debug.Log("The length of dominoes " + dominoArray.Length );
+			
 	}
 	
 	// Update is called once per frame

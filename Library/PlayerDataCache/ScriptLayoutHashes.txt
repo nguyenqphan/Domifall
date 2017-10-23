@@ -17,6 +17,7 @@ c24a21b131bfa67be1162db2cba4b52b UnityEngine.Timeline.dll:UnityEngine.Timeline.T
 ab5b5868a6b9167f5680aa4e21f9dc1c Assembly-CSharp.dll:.EditModeGridSnap
 35c07d87488afc26f5f4bac5c8518011 Assembly-CSharp.dll:.ObjectRotator
 25a8032d233df72c368030798802d97d Assembly-CSharp.dll:.ExtrudeRandomEdges
+05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.DebugCamPosition
 a35dc9cca2faebc5f5f1aeb9e8e47bbe UnityEngine.UI.dll:UnityEngine.UI.AspectRatioFitter
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.UI.dll:UnityEngine.EventSystems.BaseInput
 49cd62a578efc0a599b810a2b66cd49c UnityEngine.UI.dll:UnityEngine.UI.Button
@@ -130,6 +131,7 @@ c2275a8bfbb9f9942cad75ecdfded41d UnityEngine.HoloLens.dll:UnityEngine.VR.WSA.Spa
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:ProBuilder2.Examples.HueCube
 77fb6f20c7b05785a63e0daadc769a05 Assembly-CSharp.dll:.Test
 9d1a1dd10dc5240c9290438823bba813 Assembly-CSharp.dll:.CubeMover
+ddcfe0a7df253620c8d1507ab821cd73 Assembly-CSharp.dll:.CamPosition
 a13e348db57cdb225ef648cd7f959981 ProBuilderCore-Unity5.dll:ProBuilder2.Common.pb_BezierShape
 d65f8e166eb4df1e46eb9eaa8ee261c1 ProBuilderCore-Unity5.dll:ProBuilder2.Common.pb_ColorPalette
 05524b8f659e7bfe5756d1335fec24ba ProBuilderCore-Unity5.dll:.pb_DummyScript
@@ -174,7 +176,7 @@ c2275a8bfbb9f9942cad75ecdfded41d UnityEngine.HoloLens.dll:UnityEngine.VR.WSA.Spa
 420d73cb5979b4d126f3c0d301bcca59 Assembly-CSharp.dll:ProBuilder2.Examples.CameraControls
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.TriggerCheck
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.FinalCamTrigger
-eeadc6de3a6e350cbbb051cc3a3838c4 Assembly-CSharp.dll:.Control
+db783b6fb027aeb39d41ea2056d02ba6 Assembly-CSharp.dll:.Control
 560f6bf1f7822004e16e4c44b3a68e56 Assembly-CSharp.dll:.UVHeightGenerator
 b6ab721e5ffd449b759be02211d617f6 Assembly-CSharp.dll:.Splasher
 ffb5c24f2b4743c817a13eee241cc6bb Assembly-CSharp.dll:.CameraMove

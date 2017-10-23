@@ -6,15 +6,14 @@ public class Control : MonoBehaviour {
 
 	//Varible declarations
 	#region
-	[HideInInspector]
-	public Transform originalTrans;					//Store the original position and rotation of active domino before moving it up
+	[HideInInspector]public Transform originalTrans;					//Store the original position and rotation of active domino before moving it up
+	[HideInInspector]public bool isLastMeshLoaded = false;			//the last mesh only needs to be loaded once.
 	private CamPosition camPosition;
-
 	private int numOfDominoes;
 	private GameManager gameManager;
 	private ColorManager colorManager;
 
-	private const int HOLDERAMOUNT = 100;			//The number of dominos will combine into a mesh for better performance
+	public  int HOLDERAMOUNT = 1000;			//The number of dominos will combine into a mesh for better performance
 	private const int NUMOFACTIVEDOMINO = 10;			//The number of active dominoes
 	private List<MeshControl> meshControlList;		//Store MeshControl scripts as a List
 
@@ -173,7 +172,7 @@ public class Control : MonoBehaviour {
 	private bool IsActiveCube()
 	{
 //		return (currIndex % 2 == 0) && randomTarget == Random.Range(1, 100);
-		return currIndex % 300 == 0;
+		return currIndex % 3000 == 0;
 	}
 
 	//a method to place a domino
@@ -190,7 +189,7 @@ public class Control : MonoBehaviour {
 		if (preAngleX < 15 || preAngleX > 345) {
 			//Reached the last domino
 			if (currIndex > dominoTransforms.Length - 1) {
-				Debug.Log("Win, Reach the end of the domino length");
+//				Debug.Log("Win, Reach the end of the domino length");
 				gameManager.win = true;
 				StartCoroutine (CombineAndDecombine ());
 				ActivateKnockDomino ();
@@ -279,6 +278,10 @@ public class Control : MonoBehaviour {
 			remainingDominos++;
 			yield return null;
 		}
+
+		isLastMeshLoaded = true;
+//		yield break;
+
 
 	}
 
@@ -370,7 +373,7 @@ public class Control : MonoBehaviour {
 
 			meshControlList [tempHoderIndex].RemoveFirstSubmesh ();
 			headDominoIndex++;
-			if ((headDominoIndex - 2) % 100 == 0) {
+			if ((headDominoIndex - 2) % HOLDERAMOUNT == 0) {
 				tempHoderIndex++;
 
 			}
@@ -426,15 +429,15 @@ public class Control : MonoBehaviour {
 				
 				camPosIndex++;
 //				Debug.Log (camPosIndex + " CamPosIndex");
-				cameraMove.MoveToTarget (camPosition.transArray [camPosIndex]);
+//				cameraMove.MoveToTarget (camPosition.transArray [camPosIndex]);
 			}
 		}else{
 			if(dominoTransforms[headDominoIndex - 1].gameObject.CompareTag("CamPositionWin"))
 			{
-				Debug.Log("Move Camera here................................");
+//				Debug.Log("Move Camera here................................");
 				camPosIndex++;
 //				Debug.Log (camPosIndex + " CamPosIndex");
-				cameraMove.MoveToTarget (camPosition.transArray [camPosIndex]);
+//				cameraMove.MoveToTarget (camPosition.transArray [camPosIndex]);
 			}
 		}
 	}

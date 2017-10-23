@@ -14,6 +14,7 @@ public class TriggerCheck : MonoBehaviour {
 		if(Triggering != null && isTriggered)
 		{
 			Triggering();
+//			Debug.Log(collider.name + " NAME");
 		}
 
 		isTriggered = !isTriggered;

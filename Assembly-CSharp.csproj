@@ -68,6 +68,7 @@
      <Compile Include="Assets\_Scripts\GradientBackground.cs" />
      <Compile Include="Assets\_Scripts\Knocker.cs" />
      <Compile Include="Assets\_Scripts\MeshControl.cs" />
+     <Compile Include="Assets\_Scripts\Notes.cs" />
      <Compile Include="Assets\_Scripts\SaveTexture.cs" />
      <Compile Include="Assets\_Scripts\Singleton.cs" />
      <Compile Include="Assets\_Scripts\Test.cs" />

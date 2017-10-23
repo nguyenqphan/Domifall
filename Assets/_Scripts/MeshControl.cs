@@ -6,6 +6,7 @@ using System.Linq;
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
 public class MeshControl : MonoBehaviour {
+	private Control control;
 
 	private const int DOMINO_VERT_UV = 24;								// Number of vertices for a domino
 	private const int DOMINO_TRIANGlE = 36;								// Number of triangle for a domino
@@ -36,6 +37,7 @@ public class MeshControl : MonoBehaviour {
 	{
 		mainMeshFilter = GetComponent<MeshFilter>();
 		myTrans = transform.worldToLocalMatrix;
+		control = GameObject.FindWithTag("Control").GetComponent<Control>();
 	}
 
 	void Start()
@@ -68,6 +70,7 @@ public class MeshControl : MonoBehaviour {
 	//Remove a domino from a mesh made of out combined donino meshes
 	public void RemoveLastSubmesh()
 	{
+
 		if(!isLoaded)
 		{
 			isLoaded = true;
@@ -87,11 +90,17 @@ public class MeshControl : MonoBehaviour {
 
 	public void RemoveFirstSubmesh()
 	{
-		if(!isLoaded)
+
+		if(!isLoaded || !control.isLastMeshLoaded)
 		{
 			isLoaded = true;
 			LoadLastMesh();
 		}
+
+//		Debug.Log(vertsArray.Length + " versArray");
+
+//		Debug.Log(meshFilters[0].mesh.vertices.Length + " meshFilters");
+
 
 		numOfRemovedDomi++;
 
@@ -99,6 +108,7 @@ public class MeshControl : MonoBehaviour {
 		{
 			vertsArray[i] = tempVector3Zero;
 		}
+	
 
 		meshFilters[0].mesh.vertices = vertsArray;
 

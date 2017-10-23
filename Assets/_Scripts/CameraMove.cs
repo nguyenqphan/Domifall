@@ -124,7 +124,7 @@ public class CameraMove : MonoBehaviour {
 			yield return null;
 		}
 
-		Debug.Log("CamLastPosition called ");
+//		Debug.Log("CamLastPosition called ");
 		uiManager.ShowUI();
 	}
 
