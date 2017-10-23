@@ -89,7 +89,7 @@ public class Knocker : MonoBehaviour {
 		rb = GetComponent<Rigidbody>();							
 		rb.useGravity = false;									//dont use gravity
 		direction = trans.position - control.dominoTransforms[2].position;   //
-		rb.velocity = -direction * 10f;						//Move the game object in a given direction	
+		rb.velocity = -direction * 3f;						//Move the game object in a given direction	
 	}
 
 	void OnCollisionEnter(Collision collision)

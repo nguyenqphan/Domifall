@@ -117,6 +117,7 @@ public class Control : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
 	{
+		gameManager.win = false;
 		dominoHolderList = new List<GameObject>();								//initilize a list of domino
 		meshControlList = new List<MeshControl>();								//initilize a list of MeshControl component scripts
 		fallenHolderList = new List<GameObject>();
@@ -429,7 +430,7 @@ public class Control : MonoBehaviour {
 				
 				camPosIndex++;
 //				Debug.Log (camPosIndex + " CamPosIndex");
-//				cameraMove.MoveToTarget (camPosition.transArray [camPosIndex]);
+				cameraMove.MoveToTarget (camPosition.transArray [camPosIndex]);
 			}
 		}else{
 			if(dominoTransforms[headDominoIndex - 1].gameObject.CompareTag("CamPositionWin"))
@@ -437,7 +438,7 @@ public class Control : MonoBehaviour {
 //				Debug.Log("Move Camera here................................");
 				camPosIndex++;
 //				Debug.Log (camPosIndex + " CamPosIndex");
-//				cameraMove.MoveToTarget (camPosition.transArray [camPosIndex]);
+				cameraMove.MoveToTarget (camPosition.transArray [camPosIndex]);
 			}
 		}
 	}
