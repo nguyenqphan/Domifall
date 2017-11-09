@@ -13,16 +13,18 @@ public class MeshControl : MonoBehaviour {
 
 	private int meshLength;												// Length of a mesh
 	private int i;														// Index	
-		
+
 	private Vector3[] vertsArray;										// Vertices of the mesth
 	private Vector2[] uvsArray;											// UVs of the mesh	
 	private int[] triangleArray;										// Triangles of the mesh
 	private Vector3 tempVector3Zero = new Vector3(0f,0f,0f);			
 
+	private Mesh[] newMesh;
+	private int mIndex = 0;
 
 
-	[HideInInspector]
-	public MeshFilter[] meshFilters = new MeshFilter[2];
+	[HideInInspector] public MeshFilter[] meshFilters = new MeshFilter[2];
+	[HideInInspector] public int indexMF = 0;
 	private CombineInstance[] combine;
 
 	private int numOfCombineDomi = 0;									// Number of dominoes combined
@@ -45,24 +47,42 @@ public class MeshControl : MonoBehaviour {
 		combine		 	 = new CombineInstance[2];
 
 		mainMeshFilter.mesh = new Mesh();					//Without this condition, we will get a warning "Combine instance mesh 0 is null" becuase there is no mesh for a dominoHolder when it first creates.
-//		mainMeshFilter.mesh = new Mesh();
+		//		mainMeshFilter.mesh = new Mesh();
 		meshFilters[0] = mainMeshFilter;
+		newMesh = new Mesh[control.HOLDERAMOUNT];
+//		newMesh[0] = new Mesh();
+
+
 	}
+
+
+
+
 
 	//This medthod combines the meshes of meshFilters into one mesh.
 	public void Combine()
 	{
+		mIndex++;
 		numOfCombineDomi++;
 
-		combine[0].mesh = meshFilters[0].sharedMesh;
-		combine[0].transform = myTrans * meshFilters[0].transform.localToWorldMatrix;
+		combine[0].mesh = meshFilters[indexMF].sharedMesh;
+		combine[0].transform = myTrans * meshFilters[indexMF].transform.localToWorldMatrix;
 
-		combine[1].mesh = meshFilters[1].sharedMesh;
-		combine[1].transform = myTrans * meshFilters[1].transform.localToWorldMatrix;
+		combine[1].mesh = meshFilters[indexMF + 1].sharedMesh;
+		combine[1].transform = myTrans * meshFilters[indexMF + 1].transform.localToWorldMatrix;
 
-		meshFilters[0].mesh = new Mesh();
-//		meshFilters[0].mesh.Clear();
-		meshFilters[0].mesh.CombineMeshes(combine, true);
+
+		newMesh[mIndex] = new Mesh();
+		newMesh[mIndex].CombineMeshes(combine, true);
+
+		meshFilters[0].sharedMesh = newMesh[mIndex];
+
+		DestroyImmediate(newMesh[mIndex - 1]);
+
+//		meshFilters[0].mesh = new Mesh();
+//		meshFilters[0].mesh.CombineMeshes(combine, true);
+
+		StartCoroutine(UnLoadUnsedMesh());
 
 
 	}
@@ -97,9 +117,9 @@ public class MeshControl : MonoBehaviour {
 			LoadLastMesh();
 		}
 
-//		Debug.Log(vertsArray.Length + " versArray");
+		//		Debug.Log(vertsArray.Length + " versArray");
 
-//		Debug.Log(meshFilters[0].mesh.vertices.Length + " meshFilters");
+		//		Debug.Log(meshFilters[0].mesh.vertices.Length + " meshFilters");
 
 
 		numOfRemovedDomi++;
@@ -108,7 +128,7 @@ public class MeshControl : MonoBehaviour {
 		{
 			vertsArray[i] = tempVector3Zero;
 		}
-	
+
 
 		meshFilters[0].mesh.vertices = vertsArray;
 
@@ -116,7 +136,7 @@ public class MeshControl : MonoBehaviour {
 
 	public void LoadLastMesh()
 	{
-	    meshLength = meshFilters[0].mesh.vertices.Length;	
+		meshLength = meshFilters[0].mesh.vertices.Length;	
 		vertsArray = new Vector3[meshFilters[0].mesh.vertices.Length];
 		uvsArray = new Vector2[meshFilters[0].mesh.uv.Length];
 		triangleArray = new int[meshFilters[0].mesh.triangles.Length]; 
@@ -124,6 +144,12 @@ public class MeshControl : MonoBehaviour {
 		vertsArray = meshFilters[0].mesh.vertices;
 		uvsArray = meshFilters[0].mesh.uv;
 		triangleArray = meshFilters[0].mesh.triangles;
+	}
+
+	IEnumerator UnLoadUnsedMesh()
+	{
+		yield return null;
+		Resources.UnloadUnusedAssets();
 	}
 
 }

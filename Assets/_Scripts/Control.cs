@@ -13,7 +13,7 @@ public class Control : MonoBehaviour {
 	private GameManager gameManager;
 	private ColorManager colorManager;
 
-	public  int HOLDERAMOUNT = 1000;			//The number of dominos will combine into a mesh for better performance
+	public  int HOLDERAMOUNT = 250;			//The number of dominos will combine into a mesh for better performance
 	private const int NUMOFACTIVEDOMINO = 10;			//The number of active dominoes
 	private List<MeshControl> meshControlList;		//Store MeshControl scripts as a List
 
@@ -109,7 +109,7 @@ public class Control : MonoBehaviour {
 		gameManager = GameObject.FindWithTag("GameManager").GetComponent<GameManager>();
 		colorManager = GameObject.FindWithTag("ColorManager").GetComponent<ColorManager>();
 		camPosition = GameObject.FindWithTag("CamPositions").GetComponent<CamPosition>();
-//		cameraTrigger = GameObject.FindWithTag("CameraTrigger").GetComponent<CameraTrigger>();
+		//		cameraTrigger = GameObject.FindWithTag("CameraTrigger").GetComponent<CameraTrigger>();
 
 
 	}
@@ -131,7 +131,7 @@ public class Control : MonoBehaviour {
 		InvokeRepeating(layout, 1f, 0.3f);	
 
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 
@@ -144,7 +144,7 @@ public class Control : MonoBehaviour {
 			}
 		}
 	}
-		
+
 	//call this method to keep placing a domino at a certain interval time
 	void InvokeRepeatingDomino()
 	{
@@ -172,7 +172,7 @@ public class Control : MonoBehaviour {
 	//Rondom method to decide if a domino should be interactive
 	private bool IsActiveCube()
 	{
-//		return (currIndex % 2 == 0) && randomTarget == Random.Range(1, 100);
+		//		return (currIndex % 2 == 0) && randomTarget == Random.Range(1, 100);
 		return currIndex % 3000 == 0;
 	}
 
@@ -182,21 +182,21 @@ public class Control : MonoBehaviour {
 		if(isGameOver) {return;}											//if isGameOver is true, no need to do the rest
 
 		MoveCamera();
-	
+
 		preAngleX = dominoTransforms[currIndex - 1].eulerAngles.x;
-//		Debug.Log(dominoTransforms[currIndex - 1].name + "NAME");
-			
+		//		Debug.Log(dominoTransforms[currIndex - 1].name + "NAME");
+
 		//A condition to figure out whether or not a domino is falled
 		if (preAngleX < 15 || preAngleX > 345) {
 			//Reached the last domino
 			if (currIndex > dominoTransforms.Length - 1) {
-//				Debug.Log("Win, Reach the end of the domino length");
+				//				Debug.Log("Win, Reach the end of the domino length");
 				gameManager.win = true;
 				StartCoroutine (CombineAndDecombine ());
 				ActivateKnockDomino ();
 				lastDominoIndex = currIndex - NUMOFACTIVEDOMINO - 2;
 				numOfDominoes = currIndex - 2;
-				
+
 				return;
 			}
 
@@ -204,76 +204,76 @@ public class Control : MonoBehaviour {
 			previousDominoRotation = dominoTransforms[currIndex - 2].rotation;		//save rotaion of the original domino before starting to move it up and rotate it.
 
 
-//			Debug.Log(previousDominoTrans.position);
-//			Debug.Log(previousDominoTrans.rotation);
-//
+			//			Debug.Log(previousDominoTrans.position);
+			//			Debug.Log(previousDominoTrans.rotation);
+			//
 			dominoTransforms [currIndex].SetParent (null);						//remove the domino from its parent
 
 			//ColorMesh(dominoTransforms[currIndex].GetComponent<MeshFilter>().mesh);
 			colorManager.ColorMesh (dominoTransforms [currIndex].GetComponent<MeshFilter> ().mesh, currIndex);
-				
+
 			isInteraciveDomino = IsActiveCube ();								//Call a random function to decide whether a domino is active
 
-//			previousDominoTrans = dominoes [currIndex - 2].transform;
+			//			previousDominoTrans = dominoes [currIndex - 2].transform;
 
 			dominoes [currIndex - 2].transform.position = new Vector3 (dominoes [currIndex - 2].transform.position.x, dominoes [currIndex - 2].transform.position.y + -1f, dominoes [currIndex - 2].transform.position.z);
 			dominoes [currIndex - 2].StartMoveUp (isInteraciveDomino);			//Move the domino up	
-				
+
 			if (isInteraciveDomino) {
 				dominoTransforms[currIndex - 1].GetComponent<Rigidbody>().isKinematic = true;
 				collideCheck.position = dominoTransforms [currIndex].position;	
 				collideCheck.rotation = dominoTransforms [currIndex].rotation;
-//				Debug.Log("Inside the condition isInteractiveDomino");
+				//				Debug.Log("Inside the condition isInteractiveDomino");
 				originalTrans.position = dominoTransforms[currIndex].position;
 				originalTrans.rotation = dominoTransforms[currIndex].rotation;
-//				origianlTrans = dominoTransforms[currIndex];
-				
+				//				origianlTrans = dominoTransforms[currIndex];
+
 				CancelInvoke ();													//Stop Placing domino
 			}
-					
+
 			//			meshControlList[holderIndex].meshFilters[1] = dominoTransforms[currIndex - numOfActiveDomi].GetComponent<MeshFilter>(); //OLD
-				
-				
+
+
 			meshControlList [holderIndex].meshFilters [1] = dominoTransforms [currIndex - NUMOFACTIVEDOMINO].GetComponent<MeshFilter> ();	//get the previous domino meshFilter to combine
-				
+
 			meshControlList [holderIndex].Combine ();													
 			dominoTransforms [currIndex - NUMOFACTIVEDOMINO].gameObject.SetActive (false);
-				
+
 			currIndex++;
-				
+
 			//Creat a new domino holder after every HOLDERAMOUNT dominos
 			if ((currIndex - NUMOFACTIVEDOMINO - 2) % HOLDERAMOUNT == 0) {
 				CreateNewHolder ();
 			}
 		}else{
 			CancelInvoke ();
-//			currIndex--;													//Go back to previous domino Index\
-//			Destroy(dominoTransforms[currIndex].GetComponent<BoxCollider>());
-//			Destroy(dominoTransforms[currIndex].GetComponent<Rigidbody>());
-//			Debug.Log(previousDominoTrans.position + " Control Script");
-//			Debug.Log(previousDominoTrans.rotation + " ControlScript");
+			//			currIndex--;													//Go back to previous domino Index\
+			//			Destroy(dominoTransforms[currIndex].GetComponent<BoxCollider>());
+			//			Destroy(dominoTransforms[currIndex].GetComponent<Rigidbody>());
+			//			Debug.Log(previousDominoTrans.position + " Control Script");
+			//			Debug.Log(previousDominoTrans.rotation + " ControlScript");
 			dominoes[currIndex - 3].StartMoveDown(originalTrans);					//currIndex - 3, not - 2 becuase of failing to place domino
-//			Debug.Log("Inside the else the previous domino is fell");
-//			dominoTransforms[currIndex].position = previousDominoPos;
-//			dominoTransforms[currIndex].rotation = previousDominoRotation;
+			//			Debug.Log("Inside the else the previous domino is fell");
+			//			dominoTransforms[currIndex].position = previousDominoPos;
+			//			dominoTransforms[currIndex].rotation = previousDominoRotation;
 
 		}
-		
-	
+
+
 	}
-		
+
 
 	private int remainingDominos = 0;
 	private	IEnumerator CombineAndDecombine()
 	{
 		yield return new WaitForSeconds(2f);
 		while(currIndex > currIndex - NUMOFACTIVEDOMINO + remainingDominos){
-			
+
 			meshControlList[holderIndex].meshFilters[1] = dominoTransforms[ currIndex - NUMOFACTIVEDOMINO + remainingDominos].GetComponent<MeshFilter>();	//get the previous domino meshFilter to combine
 
 			meshControlList[holderIndex].Combine();													
 			dominoTransforms[currIndex - NUMOFACTIVEDOMINO + remainingDominos].gameObject.SetActive(false);
-		
+
 			Decombine();
 
 			remainingDominos++;
@@ -281,7 +281,7 @@ public class Control : MonoBehaviour {
 		}
 
 		isLastMeshLoaded = true;
-//		yield break;
+		//		yield break;
 
 
 	}
@@ -320,8 +320,8 @@ public class Control : MonoBehaviour {
 		isGameOver = true;
 		lastDominoIndex = currIndex - NUMOFACTIVEDOMINO - 2;
 		MoveTriggerCheck();
-//		colorManager.MakeDominoDisapear(dominoTransforms[currIndex].GetComponent<MeshFilter>().mesh);
-	
+		//		colorManager.MakeDominoDisapear(dominoTransforms[currIndex].GetComponent<MeshFilter>().mesh);
+
 	}
 
 	//Will be called from a trigger event in OnTriggerEnter() on TriggerCheck
@@ -341,7 +341,7 @@ public class Control : MonoBehaviour {
 		dominoTransforms[dominoIndex].gameObject.SetActive(false);
 
 		Decombine();
-//		MoveCamera();
+		//		MoveCamera();
 
 		if(dominoIndex > lastDominoIndex)
 		{
@@ -382,63 +382,63 @@ public class Control : MonoBehaviour {
 			if(headDominoIndex == numOfDominoes + 2){
 				cameraMove.MoveCamToLastPosition();
 			}
-				
+
 		}
 
 	}
 
-//	void MoveCamera()
-//	{
-//		if(dominoTransforms[currIndex - 1].gameObject.CompareTag("CamPos") && !isGameOver)
-//		{
-//			cameraMove.MoveToTarget(dominoTransforms[currIndex]);
-//			return;
-//		}
-//
-//		if(isGameOver && isCircleTowerRound && !isCircleBackCalled)
-//		{
-//			isCircleBackCalled = true;
-//			cameraMove.CircleBackToTop(lastDominoIndex/4);
-//		}
-//		else
-//		if(currIndex % 20 == 0)
-//		{
-//				if(isCircleBackCalled)
-//					return;
-//				if(isCircleTowerRound && currIndex % 20 == 0)
-//					cameraMove.CircleAroundTarget();
-//				else
-//					if(!isCircleTowerRound){
-//						if(!isGameOver){
-//							cameraMove.MoveToTarget(dominoTransforms[currIndex]);
-//						}else{
-//							if(!dominoTransforms[currIndex].gameObject.CompareTag("NoCamPos")){
-////								Debug.Log(dominoTransforms[currIndex].name);
-//								cameraMove.MoveToTarget(dominoTransforms[currIndex]);
-//							}
-//						}
-//
-//					}
-//		}
-//	}
+	//	void MoveCamera()
+	//	{
+	//		if(dominoTransforms[currIndex - 1].gameObject.CompareTag("CamPos") && !isGameOver)
+	//		{
+	//			cameraMove.MoveToTarget(dominoTransforms[currIndex]);
+	//			return;
+	//		}
+	//
+	//		if(isGameOver && isCircleTowerRound && !isCircleBackCalled)
+	//		{
+	//			isCircleBackCalled = true;
+	//			cameraMove.CircleBackToTop(lastDominoIndex/4);
+	//		}
+	//		else
+	//		if(currIndex % 20 == 0)
+	//		{
+	//				if(isCircleBackCalled)
+	//					return;
+	//				if(isCircleTowerRound && currIndex % 20 == 0)
+	//					cameraMove.CircleAroundTarget();
+	//				else
+	//					if(!isCircleTowerRound){
+	//						if(!isGameOver){
+	//							cameraMove.MoveToTarget(dominoTransforms[currIndex]);
+	//						}else{
+	//							if(!dominoTransforms[currIndex].gameObject.CompareTag("NoCamPos")){
+	////								Debug.Log(dominoTransforms[currIndex].name);
+	//								cameraMove.MoveToTarget(dominoTransforms[currIndex]);
+	//							}
+	//						}
+	//
+	//					}
+	//		}
+	//	}
 
 	private int camPosIndex = 0;
 	void MoveCamera(){
-		
+
 		if (!gameManager.win) {
 			if (dominoTransforms [currIndex - 1].gameObject.CompareTag ("CamPos")) {
-				
+
 				camPosIndex++;
-//				Debug.Log (camPosIndex + " CamPosIndex");
-				cameraMove.MoveToTarget (camPosition.transArray [camPosIndex]);
+				//				Debug.Log (camPosIndex + " CamPosIndex");
+//				cameraMove.MoveToTarget (camPosition.transArray [camPosIndex]);
 			}
 		}else{
 			if(dominoTransforms[headDominoIndex - 1].gameObject.CompareTag("CamPositionWin"))
 			{
-//				Debug.Log("Move Camera here................................");
+				//				Debug.Log("Move Camera here................................");
 				camPosIndex++;
-//				Debug.Log (camPosIndex + " CamPosIndex");
-				cameraMove.MoveToTarget (camPosition.transArray [camPosIndex]);
+				//				Debug.Log (camPosIndex + " CamPosIndex");
+//				cameraMove.MoveToTarget (camPosition.transArray [camPosIndex]);
 			}
 		}
 	}
@@ -451,7 +451,7 @@ public class Control : MonoBehaviour {
 		CancelInvoke ();
 		knockComponent.StartMoveUp ();
 		knockComponent.StartRotateDomino ();
-		
+
 	}
 
 }
