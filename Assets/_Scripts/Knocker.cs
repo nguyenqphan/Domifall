@@ -41,6 +41,7 @@ public class Knocker : MonoBehaviour {
 	//A coroutine to move a domino up
 	private IEnumerator MoveUp()
 	{
+		yield return new WaitForSeconds(5f);
 
 	   	 tempPos = trans.position;
 		 localX = trans.localPosition.x;

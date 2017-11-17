@@ -47,19 +47,10 @@ public class MeshControl : MonoBehaviour {
 		combine		 	 = new CombineInstance[2];
 
 		mainMeshFilter.mesh = new Mesh();					//Without this condition, we will get a warning "Combine instance mesh 0 is null" becuase there is no mesh for a dominoHolder when it first creates.
-		//		mainMeshFilter.mesh = new Mesh();
 		meshFilters[0] = mainMeshFilter;
-		newMesh = new Mesh[control.HOLDERAMOUNT];
-//		newMesh[0] = new Mesh();
-
-
+		newMesh = new Mesh[control.HOLDERAMOUNT + 1];
 	}
 
-
-
-
-
-	//This medthod combines the meshes of meshFilters into one mesh.
 	public void Combine()
 	{
 		mIndex++;
@@ -78,13 +69,6 @@ public class MeshControl : MonoBehaviour {
 		meshFilters[0].sharedMesh = newMesh[mIndex];
 
 		DestroyImmediate(newMesh[mIndex - 1]);
-
-//		meshFilters[0].mesh = new Mesh();
-//		meshFilters[0].mesh.CombineMeshes(combine, true);
-
-		StartCoroutine(UnLoadUnsedMesh());
-
-
 	}
 
 	//Remove a domino from a mesh made of out combined donino meshes
@@ -116,11 +100,6 @@ public class MeshControl : MonoBehaviour {
 			isLoaded = true;
 			LoadLastMesh();
 		}
-
-		//		Debug.Log(vertsArray.Length + " versArray");
-
-		//		Debug.Log(meshFilters[0].mesh.vertices.Length + " meshFilters");
-
 
 		numOfRemovedDomi++;
 

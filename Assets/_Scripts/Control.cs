@@ -13,7 +13,7 @@ public class Control : MonoBehaviour {
 	private GameManager gameManager;
 	private ColorManager colorManager;
 
-	public  int HOLDERAMOUNT = 250;			//The number of dominos will combine into a mesh for better performance
+	public  int HOLDERAMOUNT = 50;			//The number of dominos will combine into a mesh for better performance
 	private const int NUMOFACTIVEDOMINO = 10;			//The number of active dominoes
 	private List<MeshControl> meshControlList;		//Store MeshControl scripts as a List
 
@@ -109,8 +109,6 @@ public class Control : MonoBehaviour {
 		gameManager = GameObject.FindWithTag("GameManager").GetComponent<GameManager>();
 		colorManager = GameObject.FindWithTag("ColorManager").GetComponent<ColorManager>();
 		camPosition = GameObject.FindWithTag("CamPositions").GetComponent<CamPosition>();
-		//		cameraTrigger = GameObject.FindWithTag("CameraTrigger").GetComponent<CameraTrigger>();
-
 
 	}
 
@@ -172,8 +170,7 @@ public class Control : MonoBehaviour {
 	//Rondom method to decide if a domino should be interactive
 	private bool IsActiveCube()
 	{
-		//		return (currIndex % 2 == 0) && randomTarget == Random.Range(1, 100);
-		return currIndex % 3000 == 0;
+		return currIndex % 50 == 0;
 	}
 
 	//a method to place a domino
@@ -184,7 +181,6 @@ public class Control : MonoBehaviour {
 		MoveCamera();
 
 		preAngleX = dominoTransforms[currIndex - 1].eulerAngles.x;
-		//		Debug.Log(dominoTransforms[currIndex - 1].name + "NAME");
 
 		//A condition to figure out whether or not a domino is falled
 		if (preAngleX < 15 || preAngleX > 345) {
@@ -196,17 +192,13 @@ public class Control : MonoBehaviour {
 				ActivateKnockDomino ();
 				lastDominoIndex = currIndex - NUMOFACTIVEDOMINO - 2;
 				numOfDominoes = currIndex - 2;
-
+				MoveCamera();
 				return;
 			}
 
 			previousDominoPos = dominoTransforms[currIndex - 2].position;			//Save position of the original domino before starting to move it up
 			previousDominoRotation = dominoTransforms[currIndex - 2].rotation;		//save rotaion of the original domino before starting to move it up and rotate it.
 
-
-			//			Debug.Log(previousDominoTrans.position);
-			//			Debug.Log(previousDominoTrans.rotation);
-			//
 			dominoTransforms [currIndex].SetParent (null);						//remove the domino from its parent
 
 			//ColorMesh(dominoTransforms[currIndex].GetComponent<MeshFilter>().mesh);
@@ -216,7 +208,7 @@ public class Control : MonoBehaviour {
 
 			//			previousDominoTrans = dominoes [currIndex - 2].transform;
 
-			dominoes [currIndex - 2].transform.position = new Vector3 (dominoes [currIndex - 2].transform.position.x, dominoes [currIndex - 2].transform.position.y + -1f, dominoes [currIndex - 2].transform.position.z);
+			dominoTransforms[currIndex].position = new Vector3 (dominoTransforms[currIndex].position.x, dominoTransforms[currIndex].position.y + -1f, dominoes [currIndex - 2].transform.position.z);
 			dominoes [currIndex - 2].StartMoveUp (isInteraciveDomino);			//Move the domino up	
 
 			if (isInteraciveDomino) {
@@ -241,25 +233,14 @@ public class Control : MonoBehaviour {
 
 			currIndex++;
 
-			//Creat a new domino holder after every HOLDERAMOUNT dominos
 			if ((currIndex - NUMOFACTIVEDOMINO - 2) % HOLDERAMOUNT == 0) {
 				CreateNewHolder ();
 			}
+				
 		}else{
 			CancelInvoke ();
-			//			currIndex--;													//Go back to previous domino Index\
-			//			Destroy(dominoTransforms[currIndex].GetComponent<BoxCollider>());
-			//			Destroy(dominoTransforms[currIndex].GetComponent<Rigidbody>());
-			//			Debug.Log(previousDominoTrans.position + " Control Script");
-			//			Debug.Log(previousDominoTrans.rotation + " ControlScript");
 			dominoes[currIndex - 3].StartMoveDown(originalTrans);					//currIndex - 3, not - 2 becuase of failing to place domino
-			//			Debug.Log("Inside the else the previous domino is fell");
-			//			dominoTransforms[currIndex].position = previousDominoPos;
-			//			dominoTransforms[currIndex].rotation = previousDominoRotation;
-
 		}
-
-
 	}
 
 
@@ -281,9 +262,6 @@ public class Control : MonoBehaviour {
 		}
 
 		isLastMeshLoaded = true;
-		//		yield break;
-
-
 	}
 
 	void CreateNewHolder()
@@ -320,8 +298,6 @@ public class Control : MonoBehaviour {
 		isGameOver = true;
 		lastDominoIndex = currIndex - NUMOFACTIVEDOMINO - 2;
 		MoveTriggerCheck();
-		//		colorManager.MakeDominoDisapear(dominoTransforms[currIndex].GetComponent<MeshFilter>().mesh);
-
 	}
 
 	//Will be called from a trigger event in OnTriggerEnter() on TriggerCheck
@@ -430,7 +406,7 @@ public class Control : MonoBehaviour {
 
 				camPosIndex++;
 				//				Debug.Log (camPosIndex + " CamPosIndex");
-//				cameraMove.MoveToTarget (camPosition.transArray [camPosIndex]);
+				cameraMove.MoveToTarget (camPosition.transArray [camPosIndex]);
 			}
 		}else{
 			if(dominoTransforms[headDominoIndex - 1].gameObject.CompareTag("CamPositionWin"))
@@ -438,7 +414,7 @@ public class Control : MonoBehaviour {
 				//				Debug.Log("Move Camera here................................");
 				camPosIndex++;
 				//				Debug.Log (camPosIndex + " CamPosIndex");
-//				cameraMove.MoveToTarget (camPosition.transArray [camPosIndex]);
+				cameraMove.MoveToTarget (camPosition.transArray [camPosIndex]);
 			}
 		}
 	}

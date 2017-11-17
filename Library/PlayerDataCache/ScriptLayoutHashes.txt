@@ -83,7 +83,7 @@ f61c0793411f10cf5fbfa1473fef5ef2 UnityEngine.UI.dll:UnityEngine.UI.ToggleGroup
 86d36c43c53541d667100dc90b89cfba UnityEngine.UI.dll:UnityEngine.EventSystems.TouchInputModule
 1b8c02d0aa82fbf036a2b9b2d713eec3 UnityEngine.UI.dll:UnityEngine.UI.VerticalLayoutGroup
 984b6bc97af382e23cf3d6c5f9f89257 Assembly-CSharp.dll:.GradientBackground
-05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.ExtraControl
+5a381adbec27c8cdd414760e5898c569 Assembly-CSharp.dll:.ExtraControl
 9008bdf459020f5356e69af2650f275e Assembly-CSharp.dll:ProBuilder2.Examples.IcoBumpin
 c8dfb9f9ee4ddccb1c5254fcbb14afe1 Assembly-CSharp.dll:.Manager
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.Timeline.dll:UnityEngine.Timeline.ActivationPlayableAsset
@@ -128,6 +128,7 @@ c2275a8bfbb9f9942cad75ecdfded41d UnityEngine.HoloLens.dll:UnityEngine.XR.WSA.Spa
 45f3431f0103c41611e8d4eec3d439df UnityEngine.HoloLens.dll:UnityEngine.XR.WSA.SpatialMappingRenderer
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.MeshGetText
 7fb774d319410bd2c28cc36ef76111f2 Assembly-CSharp.dll:.DistanceLight
+bc19f84cbc6a0135d9d71890e6bc9af8 Assembly-CSharp.dll:.ExtraMeshControl
 05524b8f659e7bfe5756d1335fec24ba Vuforia.UnityExtensions.dll:Vuforia.BackgroundPlaneBehaviour
 342c9a27403d4f1a11164f989d99bd3f Vuforia.UnityExtensions.dll:Vuforia.CloudRecoBehaviour
 9519b45b1fe77ca14bbfebb6a5236e2e Vuforia.UnityExtensions.dll:Vuforia.CylinderTargetBehaviour

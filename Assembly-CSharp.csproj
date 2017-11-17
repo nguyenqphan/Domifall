@@ -61,7 +61,10 @@
      <Compile Include="Assets\_Scripts\Domino.cs" />
      <Compile Include="Assets\_Scripts\DontDestroy.cs" />
      <Compile Include="Assets\_Scripts\DuplicationCheck.cs" />
-     <Compile Include="Assets\_Scripts\ExtraControl.cs" />
+     <Compile Include="Assets\_Scripts\ExtraScritps\ExtraControl.cs" />
+     <Compile Include="Assets\_Scripts\ExtraScritps\ExtraMeshControl.cs" />
+     <Compile Include="Assets\_Scripts\ExtraScritps\ExtraTriggerCheck.cs" />
+     <Compile Include="Assets\_Scripts\ExtraScritps\TriggerPlaceDomino.cs" />
      <Compile Include="Assets\_Scripts\FinalCamTrigger.cs" />
      <Compile Include="Assets\_Scripts\GameManager.cs" />
      <Compile Include="Assets\_Scripts\GameOverCheck.cs" />
