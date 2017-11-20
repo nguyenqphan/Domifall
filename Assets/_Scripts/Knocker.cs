@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Knocker : MonoBehaviour {
 
+
 	private Transform trans;								//Store the transform component 										
 	private float distanceTomove;							//Store the current distance
 	private float distance = 1.5f;							//Store a distance
@@ -16,7 +17,6 @@ public class Knocker : MonoBehaviour {
 
 	private Vector3 tempPos;
 	private bool isMoveUpCalled = false;
-
 
 	private Vector3 direction;
 	void Awake()
@@ -41,8 +41,6 @@ public class Knocker : MonoBehaviour {
 	//A coroutine to move a domino up
 	private IEnumerator MoveUp()
 	{
-		yield return new WaitForSeconds(5f);
-
 	   	 tempPos = trans.position;
 		 localX = trans.localPosition.x;
 		 localY = trans.localPosition.y;

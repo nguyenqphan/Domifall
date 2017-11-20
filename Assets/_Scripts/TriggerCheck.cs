@@ -19,4 +19,5 @@ public class TriggerCheck : MonoBehaviour {
 
 		isTriggered = !isTriggered;
 	}
+
 }

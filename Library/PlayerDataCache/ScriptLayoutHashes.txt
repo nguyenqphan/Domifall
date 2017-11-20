@@ -1,4 +1,4 @@
-Android
+OSXStandalone
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.Timeline.dll:UnityEngine.Timeline.ActivationPlayableAsset
 970a95104359198fe1a98ef48655de8c UnityEngine.Timeline.dll:UnityEngine.Timeline.ActivationTrack
 8144169769d51429c4aedc8b0f92d47b UnityEngine.Timeline.dll:UnityEngine.Timeline.AnimationPlayableAsset
@@ -191,6 +191,7 @@ a9e1c36c671666e79706791e556d5100 Vuforia.UnityExtensions.dll:Vuforia.VuMarkBehav
 15bea26698002c6c4a3087131232ce5c Vuforia.UnityExtensions.dll:Vuforia.WordBehaviour
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.DisableRendererOnMouseDown
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:ProBuilder2.Examples.HueCube
+05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.ExtraTriggerCheck
 77fb6f20c7b05785a63e0daadc769a05 Assembly-CSharp.dll:.Test
 9d1a1dd10dc5240c9290438823bba813 Assembly-CSharp.dll:.CubeMover
 ddcfe0a7df253620c8d1507ab821cd73 Assembly-CSharp.dll:.CamPosition
@@ -246,6 +247,7 @@ db783b6fb027aeb39d41ea2056d02ba6 Assembly-CSharp.dll:.Control
 560f6bf1f7822004e16e4c44b3a68e56 Assembly-CSharp.dll:.UVHeightGenerator
 b6ab721e5ffd449b759be02211d617f6 Assembly-CSharp.dll:.Splasher
 ffb5c24f2b4743c817a13eee241cc6bb Assembly-CSharp.dll:.CameraMove
+05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.TriggerPlaceDomino
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.CameraTrigger
 bc19f84cbc6a0135d9d71890e6bc9af8 Assembly-CSharp.dll:.MeshControl
 9584ded0094b50acafa06c009d12b5fd Assembly-CSharp.dll:.UIManager

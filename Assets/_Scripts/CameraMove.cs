@@ -5,6 +5,9 @@ using UnityEngine;
 public class CameraMove : MonoBehaviour {
 
 	private UIManager uiManager;
+	private Knocker knockComponent;				//reference to Knocker script
+	private GameManager gameManager;
+	private bool isKnocked = false;
 
 	public Transform camFinalPos;
 	public Vector3 velocity = Vector3.one;
@@ -12,9 +15,7 @@ public class CameraMove : MonoBehaviour {
 
 	private Transform trans;
 	private float speed = 3f;
-	private float distance;
 	private Vector3 tempPos;
-	private Quaternion tempRot;
 
 	float angle = 0f;
 	float rotateSpeed = 35f;
@@ -40,6 +41,8 @@ public class CameraMove : MonoBehaviour {
 	{
 		trans = GetComponent<Transform>();
 		uiManager = GameObject.FindWithTag("UIManager").GetComponent<UIManager>();
+		knockComponent = GameObject.FindWithTag("KnockDomino").GetComponent<Knocker>();
+		gameManager = GameObject.FindWithTag("GameManager").GetComponent<GameManager>();
 	}
 
 
@@ -61,10 +64,8 @@ public class CameraMove : MonoBehaviour {
 		
 
 		tempPos = targetTrans.position;
-		tempRot = targetTrans.rotation;
 		while(trans.position != tempPos)
 		{
-			distance = speed * Time.deltaTime;
 			trans.position = Vector3.SmoothDamp(trans.position, tempPos, ref vel, 1f);
 
 			//condition to exit the loop - stop the camere
@@ -73,6 +74,14 @@ public class CameraMove : MonoBehaviour {
 				break;
 			}
 			yield return null;	
+		}
+
+		if(isKnocked == false && gameManager.win == true)
+		{
+			isKnocked = true;
+			knockComponent.gameObject.SetActive(true);
+			knockComponent.StartMoveUp();
+			knockComponent.StartRotateDomino();
 		}
 	
 	}

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+//using System;
 
 public class Control : MonoBehaviour {
 
@@ -53,7 +54,6 @@ public class Control : MonoBehaviour {
 	public Transform[] dominoTransforms;		//Store the transform component of dominoes. Make it public so the Knocker component can have access to the first Domino for direction
 	private Domino[] dominoes;					//Store the dominoes component
 
-	private Knocker knockComponent;				//reference to Knocker script
 	private CameraMove cameraMove;
 
 	private int dominoIndex = 2;
@@ -82,7 +82,7 @@ public class Control : MonoBehaviour {
 		CollideCheck.Colliding  += InvokeRepeatingDomino;										//Register an event
 		TriggerCheck.Triggering += NextDomino;
 		Domino.GameOverCheck += MoveGameOverCheck;
-		GameOverCheck.CallGameOver += SetGameOver;
+//		GameOverCheck.CallGameOver += SetGameOver;
 
 	}
 
@@ -92,7 +92,7 @@ public class Control : MonoBehaviour {
 		CollideCheck.Colliding  -= InvokeRepeatingDomino;										//Unregister an event
 		TriggerCheck.Triggering -= NextDomino;
 		Domino.GameOverCheck -= MoveGameOverCheck;
-		GameOverCheck.CallGameOver -= SetGameOver;
+//		GameOverCheck.CallGameOver -= SetGameOver;
 
 	}
 
@@ -103,8 +103,7 @@ public class Control : MonoBehaviour {
 		collideCheck = GameObject.FindWithTag("CollideCheck").GetComponent<Transform>();		
 		knockDomino = GameObject.FindWithTag("KnockDomino").GetComponent<Transform>();
 		gameoverCheck = GameObject.FindWithTag("GameOverCheck").GetComponent<Transform>();
-		triggerCheck = GameObject.FindWithTag("TriggerCheck").GetComponent<Transform>();
-		knockComponent = GameObject.FindWithTag("KnockDomino").GetComponent<Knocker>();
+		triggerCheck = GameObject.FindWithTag("TriggerCheck").GetComponent<Transform>( );
 		cameraMove = GameObject.FindWithTag("CameraHolder").GetComponent<CameraMove>();
 		gameManager = GameObject.FindWithTag("GameManager").GetComponent<GameManager>();
 		colorManager = GameObject.FindWithTag("ColorManager").GetComponent<ColorManager>();
@@ -141,6 +140,9 @@ public class Control : MonoBehaviour {
 				InvokeRepeatingDomino();
 			}
 		}
+
+
+
 	}
 
 	//call this method to keep placing a domino at a certain interval time
@@ -170,7 +172,7 @@ public class Control : MonoBehaviour {
 	//Rondom method to decide if a domino should be interactive
 	private bool IsActiveCube()
 	{
-		return currIndex % 50 == 0;
+		return currIndex % 39 == 0;
 	}
 
 	//a method to place a domino
@@ -189,7 +191,9 @@ public class Control : MonoBehaviour {
 				//				Debug.Log("Win, Reach the end of the domino length");
 				gameManager.win = true;
 				StartCoroutine (CombineAndDecombine ());
-				ActivateKnockDomino ();
+				isGameOver = true;
+				MoveTriggerCheck();													
+				CancelInvoke ();
 				lastDominoIndex = currIndex - NUMOFACTIVEDOMINO - 2;
 				numOfDominoes = currIndex - 2;
 				MoveCamera();
@@ -281,24 +285,50 @@ public class Control : MonoBehaviour {
 	//OnTriggerEnter this TriggerCheck will trigger NextDomino() which executes CombineFallDomino() and Decombine()
 	void MoveTriggerCheck()
 	{
-		triggerCheck.position = dominoTransforms[dominoIndex + offsetDomiIndex].position;
-		triggerCheck.rotation = dominoTransforms[dominoIndex + offsetDomiIndex].rotation;
+		if(triggerCheck == null)
+		{
+			triggerCheck = GameObject.FindWithTag("TriggerCheck").GetComponent<Transform>();
+			triggerCheck.position = dominoTransforms[dominoIndex + offsetDomiIndex].position;
+			triggerCheck.rotation = dominoTransforms[dominoIndex + offsetDomiIndex].rotation;
+		}
+		else{
+			triggerCheck.position = dominoTransforms[dominoIndex + offsetDomiIndex].position;
+			triggerCheck.rotation = dominoTransforms[dominoIndex + offsetDomiIndex].rotation;
+		}
 
+//		try
+//		{
+//			triggerCheck.position = dominoTransforms[dominoIndex + offsetDomiIndex].position;
+//			triggerCheck.rotation = dominoTransforms[dominoIndex + offsetDomiIndex].rotation;
+//		}
+//		catch(Exception e)
+//		{
+//			triggerCheck = GameObject.FindWithTag("TriggerCheck").GetComponent<Transform>();
+//			triggerCheck.position = dominoTransforms[dominoIndex + offsetDomiIndex].position;
+//			triggerCheck.rotation = dominoTransforms[dominoIndex + offsetDomiIndex].rotation;
+//		}
+			
 	}
 
 	//A trigger Check to know if the active dominoes fall backward
 	void MoveGameOverCheck()
 	{
-		gameoverCheck.position = dominoTransforms[currIndex - 2].position;
-		gameoverCheck.rotation = dominoTransforms[currIndex - 2].rotation;
+		if(gameoverCheck == null)
+		{
+			gameoverCheck = GameObject.FindWithTag("TriggerCheck").GetComponent<Transform>();
+		}else
+		{
+			gameoverCheck.position = dominoTransforms[currIndex - 2].position;
+			gameoverCheck.rotation = dominoTransforms[currIndex - 2].rotation;
+		}
 	}
 
-	void SetGameOver()
-	{
-		isGameOver = true;
-		lastDominoIndex = currIndex - NUMOFACTIVEDOMINO - 2;
-		MoveTriggerCheck();
-	}
+//	void SetGameOver()
+//	{
+//		isGameOver = true;
+//		lastDominoIndex = currIndex - NUMOFACTIVEDOMINO - 2;
+//		MoveTriggerCheck();
+//	}
 
 	//Will be called from a trigger event in OnTriggerEnter() on TriggerCheck
 	void NextDomino()
@@ -419,15 +449,16 @@ public class Control : MonoBehaviour {
 		}
 	}
 
-	void ActivateKnockDomino()
-	{
-		isGameOver = true;
-		MoveTriggerCheck();
-		knockDomino.gameObject.SetActive(true);														
-		CancelInvoke ();
-		knockComponent.StartMoveUp ();
-		knockComponent.StartRotateDomino ();
-
-	}
+//	void ActivateKnockDomino()
+//	{
+//		isGameOver = true;
+//	
+//		MoveTriggerCheck();
+////		knockDomino.gameObject.SetActive(true);														
+//		CancelInvoke ();
+////		knockComponent.StartMoveUp ();
+////		knockComponent.StartRotateDomino ();
+//
+//	}
 
 }
