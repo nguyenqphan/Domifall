@@ -172,7 +172,7 @@ public class Control : MonoBehaviour {
 	//Rondom method to decide if a domino should be interactive
 	private bool IsActiveCube()
 	{
-		return currIndex % 39 == 0;
+		return currIndex % 30 == 0;
 	}
 
 	//a method to place a domino
@@ -435,7 +435,7 @@ public class Control : MonoBehaviour {
 			if (dominoTransforms [currIndex - 1].gameObject.CompareTag ("CamPos")) {
 
 				camPosIndex++;
-				//				Debug.Log (camPosIndex + " CamPosIndex");
+								Debug.Log (camPosIndex + " CamPosIndex");
 				cameraMove.MoveToTarget (camPosition.transArray [camPosIndex]);
 			}
 		}else{
@@ -443,7 +443,7 @@ public class Control : MonoBehaviour {
 			{
 				//				Debug.Log("Move Camera here................................");
 				camPosIndex++;
-				//				Debug.Log (camPosIndex + " CamPosIndex");
+								Debug.Log (camPosIndex + " CamPosIndex");
 				cameraMove.MoveToTarget (camPosition.transArray [camPosIndex]);
 			}
 		}

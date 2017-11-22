@@ -12,6 +12,7 @@ public class DuplicationCheck : MonoBehaviour {
 
 		dominoArray = GetComponentsInChildren<Transform>();
 		Debug.Log("The length of dominoes " + dominoArray.Length );
+
 	}
 
 
@@ -22,6 +23,11 @@ public class DuplicationCheck : MonoBehaviour {
 			if(dominoArray[i].position == dominoArray[i + 1].position)
 			{
 				Debug.Log(dominoArray[i].name);
+				if(dominoArray[i].CompareTag("CampPos") || dominoArray[i].CompareTag("CamPositionWin"))
+				{
+					Debug.Log(dominoArray[i].name);
+				}
+
 			}
 		}
 

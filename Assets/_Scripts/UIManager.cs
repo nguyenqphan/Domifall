@@ -25,13 +25,13 @@ public class UIManager : MonoBehaviour {
 	public void Level1()
 	{
 		HideUI();
-		SceneManager.LoadScene("Level_02");
+		SceneManager.LoadScene("Level_04");
 	}
 
 	public void Level2()
 	{
 		HideUI();
-		SceneManager.LoadScene("Level_03");
+		SceneManager.LoadScene("Level_15");
 	}
 
 	public void HideUI()
