@@ -23,7 +23,7 @@ public class DuplicationCheck : MonoBehaviour {
 			if(dominoArray[i].position == dominoArray[i + 1].position)
 			{
 				Debug.Log(dominoArray[i].name);
-				if(dominoArray[i].CompareTag("CampPos") || dominoArray[i].CompareTag("CamPositionWin"))
+				if(dominoArray[i].CompareTag("CamPos") || dominoArray[i].CompareTag("CamPositionWin"))
 				{
 					Debug.Log(dominoArray[i].name);
 				}

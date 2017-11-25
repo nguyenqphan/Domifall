@@ -251,6 +251,7 @@ public class Control : MonoBehaviour {
 	private int remainingDominos = 0;
 	private	IEnumerator CombineAndDecombine()
 	{
+		
 		yield return new WaitForSeconds(2f);
 		while(currIndex > currIndex - NUMOFACTIVEDOMINO + remainingDominos){
 
@@ -258,6 +259,11 @@ public class Control : MonoBehaviour {
 
 			meshControlList[holderIndex].Combine();													
 			dominoTransforms[currIndex - NUMOFACTIVEDOMINO + remainingDominos].gameObject.SetActive(false);
+
+			if((currIndex - NUMOFACTIVEDOMINO - 2 + remainingDominos + 1) % HOLDERAMOUNT == 0)
+			{
+				CreateNewHolder ();
+			}
 
 			Decombine();
 
@@ -345,6 +351,9 @@ public class Control : MonoBehaviour {
 
 		fallenMeshControlList[fallenHolderIndex].Combine();													
 		dominoTransforms[dominoIndex].gameObject.SetActive(false);
+
+
+
 
 		Decombine();
 		//		MoveCamera();
