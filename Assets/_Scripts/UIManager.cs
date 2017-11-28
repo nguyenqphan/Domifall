@@ -25,7 +25,7 @@ public class UIManager : MonoBehaviour {
 	public void Level1()
 	{
 		HideUI();
-		SceneManager.LoadScene("Level_08");
+		SceneManager.LoadScene("Level_12");
 	}
 
 	public void Level2()
