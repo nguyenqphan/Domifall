@@ -31,7 +31,7 @@ public class UIManager : MonoBehaviour {
 	public void Level2()
 	{
 		HideUI();
-		SceneManager.LoadScene("Level_10");
+		SceneManager.LoadScene("Level_11");
 	}
 
 	public void HideUI()

@@ -131,6 +131,12 @@ public class ExtraControl : MonoBehaviour {
 			extraMeshControlList[holderIndex].Combine();													
 			dominoTransforms[currIndex - NUMOFACTIVEDOMINO + remainingDominos].gameObject.SetActive(false);
 
+			if((currIndex - NUMOFACTIVEDOMINO - 2 + remainingDominos + 1) % HOLDERAMOUNT == 0)
+			{
+				CreateNewHolder ();
+			}
+
+
 			Decombine();
 
 			remainingDominos++;
