@@ -8,68 +8,62 @@ public class Control : MonoBehaviour {
 	//Varible declarations
 	#region
 	[HideInInspector]public Transform originalTrans;					//Store the original position and rotation of active domino before moving it up
-	[HideInInspector]public bool isLastMeshLoaded = false;			//the last mesh only needs to be loaded once.
-	private CamPosition camPosition;
-	private int numOfDominoes;
-	private GameManager gameManager;
-	private ColorManager colorManager;
+	[HideInInspector]public bool isLastMeshLoaded = false;				//the last mesh only needs to be loaded once.
+	private CamPosition camPosition;									//Last Camera position
+	private int numOfDominoes;											//The number of dominoes
+	private GameManager gameManager;									//A reference to the GameManager
+	private ColorManager colorManager;									//A reference to the ColorManager
 
-	public  int HOLDERAMOUNT = 50;			//The number of dominos will combine into a mesh for better performance
-	private const int NUMOFACTIVEDOMINO = 10;			//The number of active dominoes
-	private List<MeshControl> meshControlList;		//Store MeshControl scripts as a List
+	public  int HOLDERAMOUNT = 50;										//The number of dominos will combine into a mesh for better performance
+	private const int NUMOFACTIVEDOMINO = 10;							//The number of active dominoes
+	private List<MeshControl> meshControlList;							//Store MeshControl scripts as a List
 
-	private string placeDomino = "PlaceDomino";
-	private string layout = "Layout";
-	private string fire1Button = "Fire1";
+	private string placeDomino = "PlaceDomino";							//The string name of PlaceDomino()
+	private string layout = "Layout";									//The string name of the Layout()
+	private string fire1Button = "Fire1";								//The string name of the left mouse click
 
-	public bool isCircleTowerRound = false;
+	public bool isCircleTowerRound = false;								
 	private bool isCircleBackCalled = false;
 
-	private int lastDominoIndex = 0;				//Store the last domino index
+	private int lastDominoIndex = 0;									//Store the last domino index
 
-	private  int fallenAmount = 0;					//Store the number of dominos has fallen and need to combine into a mesh
-	private int offsetDomiIndex = 7;				//The offset index used to place the triggerCheck 
+	private  int fallenAmount = 0;										//Store the number of dominos has fallen and need to combine into a mesh
+	private int offsetDomiIndex = 7;									//The offset index used to place the triggerCheck 
 
-	private bool isGameOver = false;				
+	private bool isGameOver = false;								
 
 	//NEED TO BE DELETED
 	private bool test = false;
 
-	public GameObject dominoHolder;					//a domino holder prefab
+	public GameObject dominoHolder;										//a domino holder prefab
 
-	private List<GameObject> dominoHolderList;		//A List of domino holders
-	private int holderIndex = -1;					//index of the domino holder list
+	private List<GameObject> dominoHolderList;							//A List of domino holders
+	private int holderIndex = -1;										//index of the domino holder list
 
-	private List<GameObject> fallenHolderList;		//Store a fallen domino list
-	private int fallenHolderIndex = -1;				//Index of fallenHolderList
+	private List<GameObject> fallenHolderList;							//Store a fallen domino list
+	private int fallenHolderIndex = -1;									//Index of fallenHolderList
 
 	private List<MeshControl> fallenMeshControlList;
-
-	private Transform gameoverCheck;			//OnTrigger Enter, game is over.
-	private Transform triggerCheck;				//on trigger enter, remove a domino from a  combined mesh and combine another fallen domino to another mesh. 
-	public Transform collideCheck;				//if collision detected, then continue to place dominos
-	private Transform knockDomino;				//Store the Transform of a game object that is used to initially knock down a domino	
+				
+	private Transform gameoverCheck;									//OnTrigger Enter, game is over.
+	private Transform triggerCheck;										//on trigger enter, remove a domino from a  combined mesh and combine another fallen domino to another mesh. 
+	public Transform collideCheck;										//if collision detected, then continue to place dominos
+	private Transform knockDomino;										//Store the Transform of a game object that is used to initially knock down a domino	
 
 	[HideInInspector]
-	public Transform[] dominoTransforms;		//Store the transform component of dominoes. Make it public so the Knocker component can have access to the first Domino for direction
-	private Domino[] dominoes;					//Store the dominoes component
+	public Transform[] dominoTransforms;								//Store the transform component of dominoes. Make it public so the Knocker component can have access to the first Domino for direction
+	private Domino[] dominoes;											//Store the dominoes component
 
 	private CameraMove cameraMove;
 
-	private int dominoIndex = 2;
+	private int dominoIndex = 2;										//The index of the dominoes, start at 2 becuase the parents of the dominoes
 
-	private int currIndex = 2;					//the current index of an active domino. Starting with 2 because the first two game objects are parents of dominoes
-	private int randomTarget = 1;				//a target for a random number to hit
-	private bool isInteraciveDomino = false;	//Is the current domino interactive?
-	private float preAngleX;					//Cache the rotation of x of previous dominos
+	private int currIndex = 2;											//the current index of an active domino. Starting with 2 because the first two game objects are parents of dominoes
+	private bool isInteraciveDomino = false;							//Is the current domino interactive?
+	private float preAngleX;											//Cache the rotation of x of previous dominos
 
-	private Vector3 PosA;						//Cache the position of a domino before moving it
-	private Vector3 PosB;						//Cache the position of a domino before moving it
 	[HideInInspector]	
-	public Vector3 dir;							//A direction for a knock domino (PosB - PosA)
-
-	private Vector3 previousDominoPos;
-	private Quaternion previousDominoRotation;
+	public Vector3 dir;													//A direction for a knock domino (PosB - PosA)
 	private Transform previousDominoTrans;
 
 	private IEnumerator safeCheckCoroutine;
@@ -125,8 +119,7 @@ public class Control : MonoBehaviour {
 		dominoes = GetComponentsInChildren<Domino>();							//get all Domino components of the dominoes
 		dominoTransforms[1].gameObject.SetActive(false);						//Set the parent of all dominoes inactive
 
-		InvokeRepeating(layout, 1f, 0.3f);	
-
+		InvokeRepeating(layout, 1f, 0.3f);										//Repeating invoke layout() to place the first 10 initial dominoes
 	}
 
 	// Update is called once per frame
@@ -140,9 +133,6 @@ public class Control : MonoBehaviour {
 				InvokeRepeatingDomino();
 			}
 		}
-
-
-
 	}
 
 	//call this method to keep placing a domino at a certain interval time
@@ -151,21 +141,23 @@ public class Control : MonoBehaviour {
 		InvokeRepeating(placeDomino, 1f, 0.3f);
 	}
 
+	//A methed to layout the first 10 dominoes
 	void Layout()
 	{
 		dominoTransforms[currIndex].SetParent(null);							//remove the domino from its parent
 		colorManager.ColorMesh(dominoTransforms[currIndex].GetComponent<MeshFilter>().mesh, currIndex);
 
-		dominoes[currIndex - 2].transform.position = new Vector3(dominoes[currIndex - 2].transform.position.x, dominoes[currIndex - 2].transform.position.y + -1f, dominoes[currIndex - 2].transform.position.z );
+		dominoes[currIndex - 2].transform.position = new Vector3(dominoes[currIndex - 2].transform.position.x, 
+																 dominoes[currIndex - 2].transform.position.y + -1f, 
+																 dominoes[currIndex - 2].transform.position.z );
 
 		dominoes[currIndex - 2].StartMoveUp(isInteraciveDomino);				//Move it up (CurrIndex - 2 becuase the first to gameobjects dont have Domino component))
-
+	
 		currIndex++;
 
 		if(currIndex  - 1 > NUMOFACTIVEDOMINO)									//Subtract 1 becuase becuase currIndex startd with 2 so the number of active dominos can be flexibly change for testing.
 		{
-			PosB = dominoTransforms[currIndex - 1].position;
-			CancelInvoke(layout);														//Stop placing dominos after it meets a certain condition
+			CancelInvoke(layout);												//Stop placing dominos after it meets a certain condition
 		}
 	}
 
@@ -180,17 +172,16 @@ public class Control : MonoBehaviour {
 	{
 		if(isGameOver) {return;}											//if isGameOver is true, no need to do the rest
 
-		MoveCamera();
+		MoveCamera();														//This function witll check whether or not to move the camera
 
-		preAngleX = dominoTransforms[currIndex - 1].eulerAngles.x;
+		preAngleX = dominoTransforms[currIndex - 1].eulerAngles.x;			//the x angle of previous domino to determine if the previous domino has been properly placed
 
 		//A condition to figure out whether or not a domino is falled
 		if (preAngleX < 15 || preAngleX > 345) {
 			//Reached the last domino
 			if (currIndex > dominoTransforms.Length - 1) {
-				//				Debug.Log("Win, Reach the end of the domino length");
-				gameManager.win = true;
-				StartCoroutine (CombineAndDecombine ());
+				gameManager.win = true;										//Set gameover to true
+				StartCoroutine (CombineAndDecombine ());					//Start to combine and decombine the first 10 dominoes
 				isGameOver = true;
 				MoveTriggerCheck();													
 				CancelInvoke ();
@@ -199,9 +190,6 @@ public class Control : MonoBehaviour {
 				MoveCamera();
 				return;
 			}
-
-			previousDominoPos = dominoTransforms[currIndex - 2].position;			//Save position of the original domino before starting to move it up
-			previousDominoRotation = dominoTransforms[currIndex - 2].rotation;		//save rotaion of the original domino before starting to move it up and rotate it.
 
 			dominoTransforms [currIndex].SetParent (null);						//remove the domino from its parent
 
