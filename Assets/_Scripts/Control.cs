@@ -164,7 +164,7 @@ public class Control : MonoBehaviour {
 	//Rondom method to decide if a domino should be interactive
 	private bool IsActiveCube()
 	{
-		return currIndex % 300 == 0;
+		return currIndex % 30 == 0;
 	}
 
 	//a method to place a domino
