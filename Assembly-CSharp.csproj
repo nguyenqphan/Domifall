@@ -61,6 +61,8 @@
      <Compile Include="Assets\_Scripts\Domino.cs" />
      <Compile Include="Assets\_Scripts\DontDestroy.cs" />
      <Compile Include="Assets\_Scripts\DuplicationCheck.cs" />
+     <Compile Include="Assets\_Scripts\ExecuteInEditors\PositionDomino.cs" />
+     <Compile Include="Assets\_Scripts\ExecuteInEditors\ReverseDominoes.cs" />
      <Compile Include="Assets\_Scripts\ExtraScritps\ExtraControl.cs" />
      <Compile Include="Assets\_Scripts\ExtraScritps\ExtraMeshControl.cs" />
      <Compile Include="Assets\_Scripts\ExtraScritps\ExtraTriggerCheck.cs" />
@@ -107,7 +109,6 @@
      <Compile Include="Assets\ProCore\ProBuilder\API Examples\Procedural Mesh\ExtrudeRandomEdges.cs" />
      <Compile Include="Assets\ProCore\ProBuilder\API Examples\Runtime Editing\RuntimeEdit.cs" />
      <Compile Include="Assets\ProCore\ProBuilder\API Examples\Vertex Colors\HighlightNearestFace.cs" />
-     <Compile Include="Assets\ReverseDominoes.cs" />
      <None Include="Assets\MarvelousTechniques\Shaders\DefaultTexture.shader" />
      <None Include="Assets\ProCore\ProBuilder\Shader\pb_TransparentOverlay.shader" />
      <None Include="Assets\ProCore\ProBuilder\API Examples\Icosphere FFT\README.txt" />
