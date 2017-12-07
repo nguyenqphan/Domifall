@@ -61,6 +61,7 @@
      <Compile Include="Assets\_Scripts\Domino.cs" />
      <Compile Include="Assets\_Scripts\DontDestroy.cs" />
      <Compile Include="Assets\_Scripts\DuplicationCheck.cs" />
+     <Compile Include="Assets\_Scripts\EventManager.cs" />
      <Compile Include="Assets\_Scripts\ExecuteInEditors\PositionDomino.cs" />
      <Compile Include="Assets\_Scripts\ExecuteInEditors\ReverseDominoes.cs" />
      <Compile Include="Assets\_Scripts\ExtraScritps\ExtraControl.cs" />
@@ -80,6 +81,7 @@
      <Compile Include="Assets\_Scripts\Test.cs" />
      <Compile Include="Assets\_Scripts\TriggerCheck.cs" />
      <Compile Include="Assets\_Scripts\UIManager.cs" />
+     <Compile Include="Assets\AlphaControl.cs" />
      <Compile Include="Assets\CamPosition.cs" />
      <Compile Include="Assets\Manager.cs" />
      <Compile Include="Assets\MarvelousTechniques\Scenes\Tests\DistanceFogStatic\DistanceFogStatic.cs" />

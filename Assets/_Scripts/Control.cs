@@ -188,6 +188,7 @@ public class Control : MonoBehaviour {
 				lastDominoIndex = currIndex - NUMOFACTIVEDOMINO - 2;
 				numOfDominoes = currIndex - 2;
 				MoveCamera();
+				TriggerEvents();
 				return;
 			}
 
@@ -444,6 +445,11 @@ public class Control : MonoBehaviour {
 				cameraMove.MoveToTarget (camPosition.transArray [camPosIndex]);
 			}
 		}
+	}
+
+	void TriggerEvents()
+	{
+		EventManager.TriggerEvent("Fade");
 	}
 
 //	void ActivateKnockDomino()

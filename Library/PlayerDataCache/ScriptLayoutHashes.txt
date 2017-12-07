@@ -14,6 +14,7 @@ af723155c251fcfa0e66530a75f3ea4c UnityEngine.Timeline.dll:UnityEngine.Timeline.T
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.DistanceFogStatic
 3484be1cd8124a78400c4bf3f1a5e032 Assembly-CSharp.dll:Kirnu.MarvelousBloom
 ab5b5868a6b9167f5680aa4e21f9dc1c Assembly-CSharp.dll:.EditModeGridSnap
+05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.PositionDomino
 35c07d87488afc26f5f4bac5c8518011 Assembly-CSharp.dll:.ObjectRotator
 25a8032d233df72c368030798802d97d Assembly-CSharp.dll:.ExtrudeRandomEdges
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.DebugCamPosition
@@ -313,4 +314,3 @@ a9e1c36c671666e79706791e556d5100 Vuforia.UnityExtensions.dll:Vuforia.VuMarkBehav
 3d1b89310e77c34bc0c8d7132231345c Vuforia.UnityExtensions.dll:Vuforia.WireframeBehaviour
 05524b8f659e7bfe5756d1335fec24ba Vuforia.UnityExtensions.dll:Vuforia.WireframeTrackableEventHandler
 15bea26698002c6c4a3087131232ce5c Vuforia.UnityExtensions.dll:Vuforia.WordBehaviour
-05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.PositionDomino
