@@ -156,6 +156,7 @@
      <None Include="Assets\MarvelousTechniques\Shaders\TextureBG.shader" />
      <None Include="Assets\ProCore\ProBuilder\About\Font\SIL Open Font License.txt" />
      <None Include="Assets\MarvelousTechniques\Shaders\WaterBox.shader" />
+     <None Include="Assets\_ShaderPractice\ShaderAlpha.shader" />
      <None Include="Assets\ProCore\ProBuilder\About\pc_AboutEntry_ProBuilder.txt" />
      <None Include="Assets\MarvelousTechniques\Shaders\FlagWave.shader" />
      <None Include="Assets\ProCore\ProBuilder\Shader\pb_VertexShader.shader" />

@@ -5,6 +5,8 @@ using UnityEngine.Events;
 
 public class AlphaControl : MonoBehaviour {
 
+
+
 	private UnityAction eventListener;
 
 	private Renderer sr;
@@ -26,10 +28,16 @@ public class AlphaControl : MonoBehaviour {
 	}
 
 
+
+	public float m_targetAlpha;
+	public bool m_isVanish;
+	public float m_duration;
 	void StartFading()
 	{
-		StartCoroutine (FadeOut3D (0, true, 3f));
+		StartCoroutine (FadeOut3D (m_targetAlpha, m_isVanish, m_duration));
 	}
+
+
 
 	IEnumerator FadeOut3D (float targetAlpha, bool isVanish, float duration)
 	{
