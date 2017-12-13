@@ -9,7 +9,7 @@ public class CameraMove : MonoBehaviour {
 	private GameManager gameManager;
 	private bool isKnocked = false;
 
-	public Transform camFinalPos;
+//	public Transform camFinalPos;
 	public Vector3 velocity = Vector3.one;
 	public Vector3 vel = Vector3.one;
 
@@ -121,29 +121,29 @@ public class CameraMove : MonoBehaviour {
 
 	}
 
-	private IEnumerator CamLastPosition()
-	{
-		tempPos = camFinalPos.position;
-
-		//add the offset 0.1 to the camera y position to stop the camera
-		while(trans.position.y  + 0.1 < tempPos.y)
-		{
-			trans.position = Vector3.SmoothDamp(trans.position, tempPos, ref velocity, 1f);
-
-			yield return null;
-		}
-
-//		Debug.Log("CamLastPosition called ");
-		uiManager.ShowUI();
-	}
-
-
+//	private IEnumerator CamLastPosition()
+//	{
+//		tempPos = camFinalPos.position;
+//
+//		//add the offset 0.1 to the camera y position to stop the camera
+//		while(trans.position.y  + 0.1 < tempPos.y)
+//		{
+//			trans.position = Vector3.SmoothDamp(trans.position, tempPos, ref velocity, 1f);
+//
+//			yield return null;
+//		}
+//
+////		Debug.Log("CamLastPosition called ");
+//		uiManager.ShowUI();
+//	}
 
 
-	public void MoveCamToLastPosition()
-	{
-		StartCoroutine(CamLastPosition());
-	}
+
+
+//	public void MoveCamToLastPosition()
+//	{
+//		StartCoroutine(CamLastPosition());
+//	}
 
 	public void CircleBackToTop(float dis)
 	{

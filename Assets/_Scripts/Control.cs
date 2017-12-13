@@ -90,7 +90,7 @@ public class Control : MonoBehaviour {
 
 	}
 
-
+	private UIManager uIManager;
 	void Awake()
 	{
 		originalTrans = GameObject.FindWithTag("OriginalTrans").GetComponent<Transform>();
@@ -98,10 +98,11 @@ public class Control : MonoBehaviour {
 		knockDomino = GameObject.FindWithTag("KnockDomino").GetComponent<Transform>();
 		gameoverCheck = GameObject.FindWithTag("GameOverCheck").GetComponent<Transform>();
 		triggerCheck = GameObject.FindWithTag("TriggerCheck").GetComponent<Transform>( );
-		cameraMove = GameObject.FindWithTag("CameraHolder").GetComponent<CameraMove>();
+		cameraMove = GameObject.FindWithTag("MainCamera").GetComponent<CameraMove>();
 		gameManager = GameObject.FindWithTag("GameManager").GetComponent<GameManager>();
 		colorManager = GameObject.FindWithTag("ColorManager").GetComponent<ColorManager>();
 		camPosition = GameObject.FindWithTag("CamPositions").GetComponent<CamPosition>();
+		uIManager = GameObject.FindWithTag("UIManager").GetComponent<UIManager>();
 
 	}
 
@@ -164,7 +165,7 @@ public class Control : MonoBehaviour {
 	//Rondom method to decide if a domino should be interactive
 	private bool IsActiveCube()
 	{
-		return currIndex % 300 == 0;
+		return currIndex % 30 == 0;
 	}
 
 	//a method to place a domino
@@ -216,9 +217,6 @@ public class Control : MonoBehaviour {
 				CancelInvoke ();													//Stop Placing domino
 			}
 
-			//			meshControlList[holderIndex].meshFilters[1] = dominoTransforms[currIndex - numOfActiveDomi].GetComponent<MeshFilter>(); //OLD
-
-
 			meshControlList [holderIndex].meshFilters [1] = dominoTransforms [currIndex - NUMOFACTIVEDOMINO].GetComponent<MeshFilter> ();	//get the previous domino meshFilter to combine
 
 			meshControlList [holderIndex].Combine ();													
@@ -255,7 +253,7 @@ public class Control : MonoBehaviour {
 			}
 
 			Decombine();
-
+//			MoveCamera();
 			remainingDominos++;
 			yield return null;
 		}
@@ -290,18 +288,6 @@ public class Control : MonoBehaviour {
 			triggerCheck.position = dominoTransforms[dominoIndex + offsetDomiIndex].position;
 			triggerCheck.rotation = dominoTransforms[dominoIndex + offsetDomiIndex].rotation;
 		}
-
-//		try
-//		{
-//			triggerCheck.position = dominoTransforms[dominoIndex + offsetDomiIndex].position;
-//			triggerCheck.rotation = dominoTransforms[dominoIndex + offsetDomiIndex].rotation;
-//		}
-//		catch(Exception e)
-//		{
-//			triggerCheck = GameObject.FindWithTag("TriggerCheck").GetComponent<Transform>();
-//			triggerCheck.position = dominoTransforms[dominoIndex + offsetDomiIndex].position;
-//			triggerCheck.rotation = dominoTransforms[dominoIndex + offsetDomiIndex].rotation;
-//		}
 			
 	}
 
@@ -317,14 +303,7 @@ public class Control : MonoBehaviour {
 			gameoverCheck.rotation = dominoTransforms[currIndex - 2].rotation;
 		}
 	}
-
-//	void SetGameOver()
-//	{
-//		isGameOver = true;
-//		lastDominoIndex = currIndex - NUMOFACTIVEDOMINO - 2;
-//		MoveTriggerCheck();
-//	}
-
+		
 	//Will be called from a trigger event in OnTriggerEnter() on TriggerCheck
 	void NextDomino()
 	{
@@ -341,9 +320,6 @@ public class Control : MonoBehaviour {
 		fallenMeshControlList[fallenHolderIndex].Combine();													
 		dominoTransforms[dominoIndex].gameObject.SetActive(false);
 
-
-
-
 		Decombine();
 		//		MoveCamera();
 
@@ -355,8 +331,6 @@ public class Control : MonoBehaviour {
 		dominoIndex++;
 		currIndex--;
 		fallenAmount++;
-
-
 
 		if(fallenAmount % HOLDERAMOUNT == 0)
 		{
@@ -384,48 +358,16 @@ public class Control : MonoBehaviour {
 			}
 
 			if(headDominoIndex == numOfDominoes + 2){
-				cameraMove.MoveCamToLastPosition();
+				isFallingDone = true;
+				MoveCamera();								//Will move the camera to the last postition
 			}
 
 		}
 
 	}
 
-	//	void MoveCamera()
-	//	{
-	//		if(dominoTransforms[currIndex - 1].gameObject.CompareTag("CamPos") && !isGameOver)
-	//		{
-	//			cameraMove.MoveToTarget(dominoTransforms[currIndex]);
-	//			return;
-	//		}
-	//
-	//		if(isGameOver && isCircleTowerRound && !isCircleBackCalled)
-	//		{
-	//			isCircleBackCalled = true;
-	//			cameraMove.CircleBackToTop(lastDominoIndex/4);
-	//		}
-	//		else
-	//		if(currIndex % 20 == 0)
-	//		{
-	//				if(isCircleBackCalled)
-	//					return;
-	//				if(isCircleTowerRound && currIndex % 20 == 0)
-	//					cameraMove.CircleAroundTarget();
-	//				else
-	//					if(!isCircleTowerRound){
-	//						if(!isGameOver){
-	//							cameraMove.MoveToTarget(dominoTransforms[currIndex]);
-	//						}else{
-	//							if(!dominoTransforms[currIndex].gameObject.CompareTag("NoCamPos")){
-	////								Debug.Log(dominoTransforms[currIndex].name);
-	//								cameraMove.MoveToTarget(dominoTransforms[currIndex]);
-	//							}
-	//						}
-	//
-	//					}
-	//		}
-	//	}
 
+	private bool isFallingDone = false;						//done with domino falling effect
 	private int camPosIndex = 0;
 	void MoveCamera(){
 
@@ -433,18 +375,25 @@ public class Control : MonoBehaviour {
 			if (dominoTransforms [currIndex - 1].gameObject.CompareTag ("CamPos")) {
 
 				camPosIndex++;
-//								Debug.Log (camPosIndex + " CamPosIndex");
+								Debug.Log (camPosIndex + " CamPosIndex");
 				cameraMove.MoveToTarget (camPosition.transArray [camPosIndex]);
 			}
 		}else{
-			if(dominoTransforms[headDominoIndex - 1].gameObject.CompareTag("CamPositionWin"))
+			if(dominoTransforms[headDominoIndex - 1].gameObject.CompareTag("CamPositionWin") || isFallingDone)
 			{
 				//				Debug.Log("Move Camera here................................");
 				camPosIndex++;
 								Debug.Log (camPosIndex + " CamPosIndex");
 				cameraMove.MoveToTarget (camPosition.transArray [camPosIndex]);
+				if(isFallingDone)
+				{
+					uIManager.ShowUI();
+				}
+
 			}
 		}
+
+
 	}
 
 	void TriggerEvents()
@@ -452,16 +401,6 @@ public class Control : MonoBehaviour {
 		EventManager.TriggerEvent("Fade");
 	}
 
-//	void ActivateKnockDomino()
-//	{
-//		isGameOver = true;
-//	
-//		MoveTriggerCheck();
-////		knockDomino.gameObject.SetActive(true);														
-//		CancelInvoke ();
-////		knockComponent.StartMoveUp ();
-////		knockComponent.StartRotateDomino ();
-//
-//	}
+
 
 }
