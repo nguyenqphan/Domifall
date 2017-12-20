@@ -50,8 +50,8 @@ public class ExtraMeshControl : MonoBehaviour {
 		newMesh = new Mesh[extraControl.HOLDERAMOUNT + 2];
 	}
 
-
-	private int count = 0;
+	[HideInInspector]
+	public int count = 0;
 	public void Combine()
 	{
 		count++;

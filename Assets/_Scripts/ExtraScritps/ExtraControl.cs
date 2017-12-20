@@ -1,13 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System;
 public class ExtraControl : MonoBehaviour {
 
 	public GameObject extraDominoHolder;
 
 	private Transform[] dominoTransforms;
 	private Domino[] dominoes;
+	private int numOfExTraDominoes = 0;
 	private int currIndex = 2;
 	private ColorManager colorManager;
 	private List<ExtraMeshControl> extraMeshControlList;
@@ -37,12 +38,15 @@ public class ExtraControl : MonoBehaviour {
 		TriggerPlaceDomino.TriggerDomino -= StartPlaceDomino;
 	}
 
+
+
 	void Awake()
 	{
 		dominoTransforms = GetComponentsInChildren<Transform>();
 		dominoes = GetComponentsInChildren<Domino>();
 		colorManager = GameObject.FindWithTag("ExtraColorManager").GetComponent<ColorManager>();
 		triggerCheck = GameObject.FindWithTag("ExtraTriggerCheck").GetComponent<Transform>();
+
 	}
 
 	void Start()
@@ -93,7 +97,7 @@ public class ExtraControl : MonoBehaviour {
 				StopCoroutine("PlaceDomino");
 
 			}
-
+			numOfExTraDominoes++;
 			currIndex++;
 			if ((currIndex - NUMOFACTIVEDOMINO - 2) % HOLDERAMOUNT == 0) {
 				CreateNewHolder ();
@@ -110,8 +114,17 @@ public class ExtraControl : MonoBehaviour {
 	{
 		if (tempHoderIndex <= holderIndex) {
 
+			if(headDominoIndex > numOfExTraDominoes + 1) return;
+
+
+			try{
 			dominoTransforms[headDominoIndex].gameObject.SetActive(true);
 			dominoTransforms[headDominoIndex].GetComponent<Rigidbody>().isKinematic = false;
+			}
+			catch(Exception e)
+			{
+				Debug.Log("A Bug is Caught " + e);
+			}
 			extraMeshControlList [tempHoderIndex].RemoveFirstSubmesh ();
 			headDominoIndex++;
 			if ((headDominoIndex - 2) % HOLDERAMOUNT == 0) {

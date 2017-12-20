@@ -130,7 +130,7 @@ c2275a8bfbb9f9942cad75ecdfded41d UnityEngine.HoloLens.dll:UnityEngine.XR.WSA.Spa
 45f3431f0103c41611e8d4eec3d439df UnityEngine.HoloLens.dll:UnityEngine.XR.WSA.SpatialMappingRenderer
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.MeshGetText
 7fb774d319410bd2c28cc36ef76111f2 Assembly-CSharp.dll:.DistanceLight
-bc19f84cbc6a0135d9d71890e6bc9af8 Assembly-CSharp.dll:.ExtraMeshControl
+b664326d7c4dfe83a1ac7724fd6ea889 Assembly-CSharp.dll:.ExtraMeshControl
 05524b8f659e7bfe5756d1335fec24ba Vuforia.UnityExtensions.dll:Vuforia.BackgroundPlaneBehaviour
 342c9a27403d4f1a11164f989d99bd3f Vuforia.UnityExtensions.dll:Vuforia.CloudRecoBehaviour
 9519b45b1fe77ca14bbfebb6a5236e2e Vuforia.UnityExtensions.dll:Vuforia.CylinderTargetBehaviour

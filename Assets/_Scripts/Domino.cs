@@ -66,10 +66,13 @@ public class Domino : MonoBehaviour {
 
 	}
 
+
+	private bool isMovingup = true;
 	//A coroutin method to move an domino up
 	private IEnumerator MoveUp(float distance)
 	{
 //	  	Debug.Log("Inside the MoveUp function");
+		isMovingup = true;
 		 localX = domiTrans.localPosition.x;
 		 localY = domiTrans.localPosition.y;
 		 localZ = domiTrans.localPosition.z;
@@ -90,7 +93,7 @@ public class Domino : MonoBehaviour {
 
 			yield return null;
 		}
-
+		isMovingup = false;
 		StopCoroutine(corouMoveUp);
 
 		//if distance is equal to max length, it is an active domino. 
@@ -119,7 +122,7 @@ public class Domino : MonoBehaviour {
 		while(isRotating)
 		{
 //			Debug.Log(domiTrans.localRotation.eulerAngles.x);
-//			domiTrans.Rotate(Vector3.right, Space.Self);		//Rotate the domino around x axis
+			domiTrans.Rotate(Vector3.right, Space.Self);		//Rotate the domino around x axis
 
 			if(Input.GetButtonDown(fireButton))					//if Fire1 is pressed
 			{
@@ -136,11 +139,15 @@ public class Domino : MonoBehaviour {
 
 	public void StartMoveDown(Transform preTrans)
 	{
+		if(isMovingup)
+			return;
 		StartCoroutine(MoveDown(preTrans));
 	}
 
 	IEnumerator MoveDown(Transform preTrans)
 	{
+
+
 //		Debug.Log("Inside the MoveDown Function");
 		localX = domiTrans.localPosition.x;
 		localY = domiTrans.localPosition.y;
@@ -170,6 +177,8 @@ public class Domino : MonoBehaviour {
 		domiTrans.rotation = control.originalTrans.rotation;
 
 		StartCoroutine(MoveUp(maxLength));
+		yield break;
+
 	}
 
 	//Add physic components to a domino

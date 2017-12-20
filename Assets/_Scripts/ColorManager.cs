@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class ColorManager : MonoBehaviour {
 
+	enum ColorType{SOLID, PARTTERN, LERP};
+	enum NumOfColor{FIRSTCOLOR = 1, SECONDCOLOR,THIRDCOLOR, FOURTHCOLOR};
+
 	private const int NUMBEROFCOLOR = 17;
 
 	private Color32[] colorArray = new Color32[NUMBEROFCOLOR];
@@ -14,13 +17,39 @@ public class ColorManager : MonoBehaviour {
 	private int colorIndex;
 	private Color32 tempColor;
 	private bool isSwitched = true;
+	private ColorType colorType;
+
 
 	void Awake()
 	{
 		DefineColor();
+		Debug.Log(System.Enum.GetValues(typeof(ColorType)).Length);
+	}
+
+	private ColorType ColorTypePicker()
+	{
+		int randomNum;
+		randomNum = Random.Range(0, System.Enum.GetValues(typeof(ColorType)).Length);
+		switch(randomNum)
+		{
+			case 0: return ColorType.SOLID;
+			case 1: return ColorType.PARTTERN;
+			case 2: return ColorType.LERP;
+			default: return ColorType.SOLID;
+		}
 	}
 
 
+	private int RandomAColor()
+	{
+		int ranSolidColorNum;
+		ranSolidColorNum =  Random.Range(0, colorArray.Length);
+		return ranSolidColorNum;
+	}
+	private void SolidColor()
+	{
+		
+	}
 	public void  DefineColor()
 	{
 		//NOTE: alpha does not work for current domino shader.
@@ -44,6 +73,8 @@ public class ColorManager : MonoBehaviour {
 
 	}
 
+
+
 	public void ColorMesh(Mesh mesh, int numOfDomino)
 	{
 		if(lerpValue > 1f || lerpValue < 0f)
@@ -58,7 +89,7 @@ public class ColorManager : MonoBehaviour {
 			lerpValue -= 0.025f;
 		}
 
-		tempColor = Color32.Lerp(colorArray[3], colorArray[14], lerpValue);
+		tempColor = Color32.Lerp(colorArray[(int)ColorType.LERP], colorArray[(int)ColorType.PARTTERN], lerpValue);
 
 		for(i = 0; i < vertices.Length; i++)
 		{

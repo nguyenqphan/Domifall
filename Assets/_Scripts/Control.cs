@@ -122,20 +122,7 @@ public class Control : MonoBehaviour {
 
 		InvokeRepeating(layout, 1f, 0.3f);										//Repeating invoke layout() to place the first 10 initial dominoes
 	}
-
-	// Update is called once per frame
-	void Update () {
-
-		if(Input.GetButtonDown(fire1Button))
-		{
-			if(!test)
-			{
-				test = true;
-				InvokeRepeatingDomino();
-			}
-		}
-	}
-
+		
 	//call this method to keep placing a domino at a certain interval time
 	void InvokeRepeatingDomino()
 	{
@@ -149,23 +136,33 @@ public class Control : MonoBehaviour {
 		colorManager.ColorMesh(dominoTransforms[currIndex].GetComponent<MeshFilter>().mesh, currIndex);
 
 		dominoes[currIndex - 2].transform.position = new Vector3(dominoes[currIndex - 2].transform.position.x, 
-																 dominoes[currIndex - 2].transform.position.y + -1f, 
-																 dominoes[currIndex - 2].transform.position.z );
+			dominoes[currIndex - 2].transform.position.y + -1f, 
+			dominoes[currIndex - 2].transform.position.z );
 
 		dominoes[currIndex - 2].StartMoveUp(isInteraciveDomino);				//Move it up (CurrIndex - 2 becuase the first to gameobjects dont have Domino component))
-	
+
 		currIndex++;
 
 		if(currIndex  - 1 > NUMOFACTIVEDOMINO)									//Subtract 1 becuase becuase currIndex startd with 2 so the number of active dominos can be flexibly change for testing.
 		{
-			CancelInvoke(layout);												//Stop placing dominos after it meets a certain condition
+			CancelInvoke(layout);	
+			InvokeRepeatingDomino();
 		}
+
+
 	}
 
+	private float RandomXAngle()
+	{
+		return Random.Range(-3, 3) * 10;
+	}
 	//Rondom method to decide if a domino should be interactive
 	private bool IsActiveCube()
 	{
-		return currIndex % 30 == 0;
+		if(currIndex == 11)
+			return true;
+		else
+			return currIndex % 30 == 0;
 	}
 
 	//a method to place a domino
@@ -176,9 +173,10 @@ public class Control : MonoBehaviour {
 		MoveCamera();														//This function witll check whether or not to move the camera
 
 		preAngleX = dominoTransforms[currIndex - 1].eulerAngles.x;			//the x angle of previous domino to determine if the previous domino has been properly placed
-
+		Debug.Log("The Angle of X " + preAngleX);
 		//A condition to figure out whether or not a domino is falled
-		if (preAngleX < 15 || preAngleX > 345) {
+		if (preAngleX < 10 || preAngleX > 350) {
+			
 			//Reached the last domino
 			if (currIndex > dominoTransforms.Length - 1) {
 				gameManager.win = true;										//Set gameover to true
@@ -203,19 +201,26 @@ public class Control : MonoBehaviour {
 			//			previousDominoTrans = dominoes [currIndex - 2].transform;
 
 			dominoTransforms[currIndex].position = new Vector3 (dominoTransforms[currIndex].position.x, dominoTransforms[currIndex].position.y + -1f, dominoes [currIndex - 2].transform.position.z);
-			dominoes [currIndex - 2].StartMoveUp (isInteraciveDomino);			//Move the domino up	
+
 
 			if (isInteraciveDomino) {
 				dominoTransforms[currIndex - 1].GetComponent<Rigidbody>().isKinematic = true;
 				collideCheck.position = dominoTransforms [currIndex].position;	
 				collideCheck.rotation = dominoTransforms [currIndex].rotation;
 				//				Debug.Log("Inside the condition isInteractiveDomino");
-				originalTrans.position = dominoTransforms[currIndex].position;
-				originalTrans.rotation = dominoTransforms[currIndex].rotation;
+
 				//				origianlTrans = dominoTransforms[currIndex];
 
 				CancelInvoke ();													//Stop Placing domino
 			}
+
+			if(isInteraciveDomino)
+			{
+				dominoTransforms[currIndex].eulerAngles = new Vector3(-20f, dominoTransforms[currIndex].eulerAngles.y, dominoTransforms[currIndex].localRotation.z);
+				originalTrans.position = dominoTransforms[currIndex].position;
+				originalTrans.rotation = dominoTransforms[currIndex].rotation;
+			}
+			dominoes [currIndex - 2].StartMoveUp (isInteraciveDomino);			//Move the domino up	
 
 			meshControlList [holderIndex].meshFilters [1] = dominoTransforms [currIndex - NUMOFACTIVEDOMINO].GetComponent<MeshFilter> ();	//get the previous domino meshFilter to combine
 
@@ -232,6 +237,17 @@ public class Control : MonoBehaviour {
 			CancelInvoke ();
 			dominoes[currIndex - 3].StartMoveDown(originalTrans);					//currIndex - 3, not - 2 becuase of failing to place domino
 		}
+	}
+
+
+	private bool swap;
+	private float AngleOfX()
+	{
+		swap = !swap;
+		if(swap)
+			return 20f;
+		else
+			return -20f;
 	}
 
 
