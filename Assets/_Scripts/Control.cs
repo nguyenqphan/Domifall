@@ -173,7 +173,7 @@ public class Control : MonoBehaviour {
 		MoveCamera();														//This function witll check whether or not to move the camera
 
 		preAngleX = dominoTransforms[currIndex - 1].eulerAngles.x;			//the x angle of previous domino to determine if the previous domino has been properly placed
-		Debug.Log("The Angle of X " + preAngleX);
+//		Debug.Log("The Angle of X " + preAngleX);
 		//A condition to figure out whether or not a domino is falled
 		if (preAngleX < 10 || preAngleX > 350) {
 			

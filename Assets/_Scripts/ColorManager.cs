@@ -4,12 +4,9 @@ using UnityEngine;
 
 public class ColorManager : MonoBehaviour {
 
-	enum ColorType{SOLID, PARTTERN, LERP};
-	enum NumOfColor{FIRSTCOLOR = 1, SECONDCOLOR,THIRDCOLOR, FOURTHCOLOR};
 
-	private const int NUMBEROFCOLOR = 17;
+	public ColorPicker colorPicker;
 
-	private Color32[] colorArray = new Color32[NUMBEROFCOLOR];
 	private Color32[] colors = new Color32[24]; //24 vertices for primive cube
 	private Vector3[] vertices = new Vector3[24];
 	float lerpValue = 0f;
@@ -17,65 +14,46 @@ public class ColorManager : MonoBehaviour {
 	private int colorIndex;
 	private Color32 tempColor;
 	private bool isSwitched = true;
-	private ColorType colorType;
-
 
 	void Awake()
 	{
-		DefineColor();
-		Debug.Log(System.Enum.GetValues(typeof(ColorType)).Length);
+		colorPicker = GameObject.FindWithTag("ColorPicker").GetComponent<ColorPicker>();
 	}
 
-	private ColorType ColorTypePicker()
+	void Start()
 	{
-		int randomNum;
-		randomNum = Random.Range(0, System.Enum.GetValues(typeof(ColorType)).Length);
-		switch(randomNum)
-		{
-			case 0: return ColorType.SOLID;
-			case 1: return ColorType.PARTTERN;
-			case 2: return ColorType.LERP;
-			default: return ColorType.SOLID;
-		}
+		lerpValue = 0f;
 	}
-
-
-	private int RandomAColor()
-	{
-		int ranSolidColorNum;
-		ranSolidColorNum =  Random.Range(0, colorArray.Length);
-		return ranSolidColorNum;
-	}
-	private void SolidColor()
-	{
-		
-	}
-	public void  DefineColor()
-	{
-		//NOTE: alpha does not work for current domino shader.
-		colorArray[0] = new Color(255f, 153f , 0f  , 255f) / 255f; //Orange 
-		colorArray[1] = Color.white;
-		colorArray[2] = Color.red;
-		colorArray[3] = Color.green;							   //Bright Green
-		colorArray[4] = Color.blue;
-		colorArray[5] = Color.yellow;
-		colorArray[6] = Color.cyan;
-		colorArray[7] = Color.magenta;
-		colorArray[8] = new Color (192f, 192f , 192f, 255f) / 255f; //silver
-		colorArray[9] = new Color (128f, 128f , 128f, 255f) / 255f; //Gray
-		colorArray[10] = new Color (128, 0f   , 0f  , 255f) / 255f; //Maroon
-		colorArray[11] = new Color(128f, 128f , 0f  , 255f) / 255f; //Olive
-		colorArray[12] = new Color(0f  , 128f , 0f  , 255f) / 255f; //Dark Green
-		colorArray[13] = new Color(128f, 0f   , 128f, 255f) / 255f; //Purple
-		colorArray[14] = new Color(0f  , 128f , 128f, 255f) / 255f; //Teal
-		colorArray[15] = new Color(0f  , 0f   , 128f, 255f) / 255f; //Navy
-	
-
-	}
-
-
 
 	public void ColorMesh(Mesh mesh, int numOfDomino)
+	{
+		
+		if(colorPicker.colorType == ColorPicker.ColorType.LERP)
+		{
+			ColorLerp();
+		}
+		else
+		{
+			if(colorPicker.colorType == ColorPicker.ColorType.SOLID)
+			{
+				ColorSolid();
+			}
+			else
+			{
+				ColorPattern();
+			}
+				
+		}
+			
+		for(i = 0; i < vertices.Length; i++)
+		{
+			colors[i] = tempColor;
+		}
+
+		mesh.colors32 = colors;
+	}
+
+	private void ColorLerp()
 	{
 		if(lerpValue > 1f || lerpValue < 0f)
 		{
@@ -89,14 +67,34 @@ public class ColorManager : MonoBehaviour {
 			lerpValue -= 0.025f;
 		}
 
-		tempColor = Color32.Lerp(colorArray[(int)ColorType.LERP], colorArray[(int)ColorType.PARTTERN], lerpValue);
+		tempColor = Color32.Lerp(colorPicker.firstColor, colorPicker.secondColor, lerpValue);
+	}
 
-		for(i = 0; i < vertices.Length; i++)
-		{
-			colors[i] = tempColor;
-		}
 
-		mesh.colors32 = colors;
+
+	private void ColorSolid()
+	{
+		tempColor = colorPicker.firstColor;
+	}
+
+	int countColor;
+	bool colorSwitch;
+	private void ColorPattern()
+	{
+			
+			countColor++;
+		Debug.Log("Count Color " + countColor);
+		Debug.Log("ColorSwitch "+ colorSwitch);
+		Debug.Log("ColorGround "+ colorPicker.colorGroup);
+			if(countColor == colorPicker.colorGroup){
+				colorSwitch = !colorSwitch;
+				countColor = 0;
+			}
+
+		if(colorSwitch)
+			tempColor = colorPicker.firstColor;
+		else
+			tempColor = colorPicker.secondColor;
 	}
 
 	public void MakeDominoDisapear(Mesh mesh)
